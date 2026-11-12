@@ -1,0 +1,125 @@
+{
+ "setup": {
+  "printer": "Bambu Lab P1P 0.4 nozzle",
+  "process": "0.20mm Standard @BBL P1P",
+  "filament": "Generic PLA",
+  "bed": "Textured PEI Plate",
+  "walls": 3,
+  "infill": 15
+ },
+ "sliced_on": "2026-11-13",
+ "parts": {
+  "body_left": {
+   "30": {
+    "grams": 98.9,
+    "minutes": 162
+   },
+   "60": {
+    "grams": 145.4,
+    "minutes": 225
+   },
+   "120": {
+    "grams": 238.5,
+    "minutes": 349
+   }
+  },
+  "body_right": {
+   "30": {
+    "grams": 98.3,
+    "minutes": 164
+   },
+   "60": {
+    "grams": 144.9,
+    "minutes": 229
+   },
+   "120": {
+    "grams": 238.0,
+    "minutes": 359
+   }
+  },
+  "drawer_scoop": {
+   "30": {
+    "grams": 91.8,
+    "minutes": 129
+   },
+   "60": {
+    "grams": 135.8,
+    "minutes": 183
+   },
+   "120": {
+    "grams": 223.9,
+    "minutes": 286
+   }
+  },
+  "drawer_plain": {
+   "30": {
+    "grams": 93.0,
+    "minutes": 130
+   },
+   "60": {
+    "grams": 137.1,
+    "minutes": 185
+   },
+   "120": {
+    "grams": 225.2,
+    "minutes": 288
+   }
+  },
+  "wedge_swivel_l": {
+   "30": {
+    "grams": 30.5,
+    "minutes": 55
+   },
+   "60": {
+    "grams": 58.7,
+    "minutes": 100
+   },
+   "120": {
+    "grams": 115.2,
+    "minutes": 189
+   }
+  },
+  "wedge_swivel_r": {
+   "30": {
+    "grams": 30.5,
+    "minutes": 55
+   },
+   "60": {
+    "grams": 58.7,
+    "minutes": 99
+   },
+   "120": {
+    "grams": 115.2,
+    "minutes": 188
+   }
+  },
+  "plate_left": {
+   "7": {
+    "grams": 113.5,
+    "minutes": 162
+   },
+   "8": {
+    "grams": 121.2,
+    "minutes": 172
+   },
+   "20": {
+    "grams": 209.8,
+    "minutes": 280
+   }
+  },
+  "plate_right": {
+   "7": {
+    "grams": 112.4,
+    "minutes": 161
+   },
+   "8": {
+    "grams": 120.1,
+    "minutes": 171
+   },
+   "20": {
+    "grams": 207.9,
+    "minutes": 279
+   }
+  }
+ }
+}

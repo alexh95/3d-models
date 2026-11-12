@@ -1,12 +1,14 @@
 # Riser for the Dell U3421WE: design notes and handoff
 
 Everything decided, measured and learned so far, so the work can continue
-from the repository alone. Last updated 2026-11-12.
+from the repository alone. Last updated 2026-11-13.
 
-**Status:** the monitor's base outline is confirmed, the seat it sits in has
-been test-printed once and revised, and the way to split a module into
-printable parts is chosen (option A, two halves). The riser itself is not
-designed yet.
+**Status:** the monitor's base outline is confirmed and the seat it sits in
+has been test-printed twice. The riser is designed in `riser.scad` on
+option A: two body halves, a main drawer, two swivelling wedge drawers and
+a stackable top plate, with the module's height as a parameter (section
+12). Nothing of it has been printed yet; five small test pieces come
+first.
 
 ## 1. What is being built
 
@@ -129,7 +131,7 @@ See `docs/seat-section.png` and `interface_check.scad`.
 | Ring | Seat | Result |
 |---|---|---|
 | 1 | Lip 1.2 thick, 3.8 tall, inside face 1.2 inside the plate edge, outside face flush with it, 0.4 bevel | Printed on the P1P. Halves press together nicely at the dovetails (0.2 gap). Base drops in. Silver edges line up. No side play. Air gap under the plate "perhaps too big". |
-| 2 | Lip 1.8 thick, 4.2 tall, inside face 0.2 inside the plate edge, 0.6 fillets | Exported, in `stl/`. **Result not reported yet.** |
+| 2 | Lip 1.8 thick, 4.2 tall, inside face 0.2 inside the plate edge, 0.6 fillets | Printed on the P1P on 2026-11-12. The owner on 2026-11-13: count it as passed; he will check it once more, and the seat gets amended then if needed. No written result yet. |
 
 The ring is the lip on a 10 mm band, 1.2 thick, with wider patches at the
 corners for the feet, split on the centre line and joined by a dovetail at
@@ -144,6 +146,12 @@ the front and rear. About 17 g per half, one half per plate.
 | 2026-11-12 | Seat dimensions as in section 4 (second version). | Owner |
 | 2026-11-12 | Test pieces before large prints. | Owner |
 | 2026-11-12 | **Split: option A, two mirrored halves** with the seam on the centre line. | Owner |
+| 2026-11-13 | Fit-test ring 2 counts as passed (to be checked once more). | Owner |
+| 2026-11-13 | The wedge drawers swivel out by default and cannot be taken out in use. | Owner |
+| 2026-11-13 | The finger scoop is the drawer pull for now; handles are planned, with a Gridfinity drawer, several drawers per module and inner drawers (`../PLAN.md`, M4). | Owner |
+| 2026-11-13 | Top plate: 8 mm, two halves, seam on the centre line. | Owner, on the plan's recommendation |
+| 2026-11-13 | Every drawer rides above the stepped-in zone (4.6 mm), so it opens over any lip underneath; that zone becomes a closed plinth. | Design, section 12 |
+| 2026-11-13 | The recommended build puts a top plate under the monitor, so the rubber feet stand on a flat deck. | Design, section 12 |
 
 Recommended but not explicitly confirmed:
 
@@ -260,7 +268,17 @@ Collected during the session. None of these is decided.
 
 ## 8. Open questions and risks
 
-- Result of fit-test ring 2 is unknown.
+- Fit-test ring 2 has no written result; the owner counts it as passed
+  and will check again.
+- Nothing in `riser.scad` has been printed. The fits that are new, each
+  with a test piece: the stacking step, the drawer's slide and scoop, the
+  drawer stop, the wedge drawer's hub and stops, the rear seam.
+- `riser.scad` has not been opened in OpenSCAD 2021.01 by the owner yet.
+- Without a top plate the monitor's rubber feet hang over the drawers,
+  0.6 mm above them. If the feet stand lower than the black body, they
+  touch. With a top plate this does not arise.
+- In a module taller than about 120 mm the wedge drawer's post is a long
+  thin column (7.4 mm across). Untested.
 - True height of the black body, and so the real air gap above the lip.
 - Positions and height of the four rubber feet, and whether they hang clear
   in the no-deck design.
@@ -293,6 +311,9 @@ and the seam and corner details use Dell-specific helper functions
 
 ## 10. Planned next
 
+The phases are laid out in `../PLAN.md`, with the owner's decisions of
+2026-11-13 in its section 2. The brief they come from:
+
 From the owner:
 
 1. **Build the full design** on option A, with variants for drawer front
@@ -320,6 +341,10 @@ Suggestions for the website, not decisions:
 | `interface_check.scad` | The Dell base as measured, the seat, and the fit-test ring |
 | `split_concepts.scad` | Block models of split options A, B, C |
 | `joint_concepts.scad` | Samples of five seam joints |
+| `riser.scad` | **The riser:** module, drawers, top plate and test pieces (section 12) |
+| `stl/module_60mm/`, `stl/plate_8mm/` | The ready-made set: a 60 mm module and an 8 mm top plate |
+| `stl/tests/` | The test pieces |
+| `web/` | Meshes and numbers for the designer website (`../PLAN.md`, M3) |
 | `stl/fit_test_left.stl`, `stl/fit_test_right.stl` | Fit-test ring 2 |
 | `docs/outline-u3421we.png`, `.svg` | Dimensioned outline |
 | `docs/outline-u3421we-1to1-A4.pdf` | 1:1 paper template, two A4 pages |
@@ -328,7 +353,11 @@ Suggestions for the website, not decisions:
 | `docs/joint-concepts.png` | Seam joints |
 | `tools/trace_dell_outline.py` | How the outline was traced from Dell's drawing |
 | `tools/outline_drawings.py`, `tools/seat_drawing.py`, `tools/render_docs.js` | Regenerate the drawings and the template |
-| `tools/measure_parts.py` | Export parts and report size and weight |
+| `tools/measure_parts.py` | Export parts of the concept files and report size and weight |
+| `tools/riser_build.py` | Check `riser.scad`, export its STLs, slice them, write the website bundle and the pictures |
+| `tools/sliced.json` | Weights and print times from Bambu Studio, written by `riser_build.py slice` |
+| `tools/openscad-2021/Dockerfile` | OpenSCAD 2021.01 in a container, to check the files still open in it |
+| `docs/riser-*.png` | Pictures of the riser, written by `riser_build.py pictures` |
 
 Commands used (OpenSCAD 2021.01 command line):
 
@@ -354,3 +383,176 @@ Notes:
   `render_docs.js` needs Playwright with Chromium.
 - `outline_drawings.py` and `seat_drawing.py` have their own copies of the
   numbers; keep them in step with the `.scad` files.
+
+## 12. The riser as designed in `riser.scad` (2026-11-13)
+
+Built on option A. Nothing has been printed yet; the test pieces at the
+end of this section come first. Pictures: `docs/riser-exploded.png`,
+`docs/riser-open.png`, `docs/riser-stack.png`, `docs/riser-hub.png`,
+`docs/riser-print-plates.png`.
+
+### One section for everything on the outside
+
+From the underside up, measured from the edge of the silver plate:
+
+| Zone | Height, mm | Outside face |
+|---|---|---|
+| Stepped-in zone | 0 to 4.6 | 0.5 inside, so 0.3 clear of the lip below; a 0.6 bevel on the bottom edge |
+| Flare | 4.6 to 6.7 | 45 degrees, from 0.5 inside to 1.6 outside |
+| Full outline | above 6.7 | 1.6 outside |
+
+The body's walls, the drawer front, the outside walls of the wedge
+drawers and the top plate all follow it.
+
+### Nothing that moves reaches below 4.6 mm
+
+Both kinds of drawer ride level with the top of the stepped-in zone. So
+a drawer slides or swings out over the lip of whatever the module stands
+on, a top plate included. That costs 3 mm of drawer depth. In return the
+stepped-in zone runs all the way round as a closed plinth, which ties the
+front corners together and stiffens the floor.
+
+### Body halves
+
+- Floor 1.6 thick, with six holes per half between the runners
+  (`floor_lightening`).
+- The plinth all round. Above it the rear wall and the four corner
+  pieces, 2.4 thick, with the shelf and the lip of section 4 on top. The
+  shelf is 5 mm wide and its underside rises at 45 degrees.
+- Bay walls 2.4 thick and as tall as the module: with the rear wall and
+  the corners they carry whatever stands on it.
+- Runners for the main drawer: three rails per half and a ledge along the
+  bay wall, tops at 4.6.
+- Seam: two flat dovetails in the floor, as on the fit-test ring, and a
+  full-height dovetail on a 10 mm block at the rear wall. The right half
+  goes down onto the left half.
+- The lip is missing along the drawer front and the two side openings.
+  The corners and the rear hold the monitor, or the next part, in place.
+
+### Main drawer
+
+- 230 wide, straight at the rear, its front panel following the hollow
+  front edge. Walls 1.2, front 2.0, floor 1.0.
+- Inside: 227.6 wide, 201 deep on the centre line and 213 at the sides,
+  and the module's height less 6.2 tall (53.8 in a 60 mm module).
+- `drawer_front`: `scoop`, a finger scoop 40 wide and 14 deep in the top
+  edge of the panel, or `plain`.
+- Stop: a springy tongue in each side wall near the back, 16 long and 8
+  wide, standing up from the floor so it prints without support. Its
+  bump runs in a groove 1.0 deep in the bay wall. The groove begins 20 mm
+  behind the front corners, which lets the drawer out by 170 mm
+  (`drawer_stop_y`). A hump in the groove holds the drawer shut. A finger
+  tab at the tip of each tongue pulls it in, to take the drawer out.
+
+### Wedge drawers
+
+- A pie-shaped drawer on an upright post, 7.4 across, that stands on the
+  floor near the narrow front end of the wedge, at X = 129.2, Y = 41.8.
+  The drawer's hub, radius 7, just touches the outside face, so the
+  drawer's outside wall runs on from the hub and is the module's side
+  wall there. Its rear end is an arc of radius 161.6 about the post.
+- It swings out by 60 degrees (`wedge_swing`). At full swing everything
+  further than about 18 mm from the post is outside the footprint.
+- **It cannot be taken out in use.** It drops over the post before the
+  next part goes on. After that it has 0.6 mm of lift against a post as
+  tall as the module.
+- Open stop: a rib on the hub meets a buttress on the bay wall. Both are
+  as tall as the module, and they meet about 9 mm from the post. Closed stop:
+  the bay wall, 0.4 mm from the drawer. A bump 0.4 high on the outer
+  rail, with a dimple under the drawer, holds it shut.
+- It rides on the plinth along the side and on two arc-shaped rails.
+- Pull: a finger notch 26 wide and 12 deep in the top edge of the outside
+  wall, near the far end.
+- Inside it is 152 long along the outside wall, enough for one 150 mm
+  pen; walls 1.8, floor 1.2.
+- The corner in front of the hub is cut back just far enough for the
+  first 4 mm of the outside wall to turn into it. The dead corner behind
+  the drawer is closed by a thin curved wall, which also ties the rear
+  corner piece to the bay wall.
+- `wedge_left` and `wedge_right` can be `open` instead: no drawer, the
+  same body.
+
+### Top plate
+
+- A slab with the same section: stepped-in zone and flare underneath,
+  pocket floor at `plate_h` (8 by default, 7 at least), the full lip on
+  top. It stands on a module, on another plate or on the desk.
+- Two halves on the centre line, joined by three dovetails that go
+  through the whole slab.
+- **Recommended under the monitor.** It gives the rubber feet a flat
+  deck, closes the drawers in from above and completes the lip along the
+  front and sides.
+- An off-centre seam, staggered like brickwork between stacked plates,
+  was considered and dropped: the stepped-in zone of the upper part sits
+  inside the lip of the lower one, so a lower half is never held in by
+  what stands on it.
+
+### How the parts are modelled
+
+Every part is a pile of flat slabs. Each slab is a 2D shape, drawn for
+the height in the middle of the slab and extruded straight up. Sloped
+and rounded faces are steps 0.2 mm tall, the layer height. All cutting
+and joining happens in 2D, so the F5 preview takes about 4 seconds in
+OpenSCAD 2021.01. F6 is slow there; the STLs are made with the Manifold
+backend of a current OpenSCAD.
+
+Every feature is tied to the bottom or to the top of the module, and
+each sloped feature reads its height on its own steps (`_q`). So a
+module of another height is the same mesh with everything above the
+straight middle section moved up or down. The website relies on that,
+and `riser_build.py check` proves it at 30, 45, 90, 120 and 200 mm.
+
+### Numbers
+
+Sliced with Bambu Studio for the P1P on 2026-11-13: generic PLA, 0.20 mm
+layers, 3 walls, 15 percent infill, one part per plate
+(`tools/sliced.json`).
+
+| Part | Size, mm | PLA | Print time |
+|---|---|---|---|
+| Body, left half | 187 x 238 x 64 | 145 g | 3 h 45 |
+| Body, right half | 180 x 238 x 64 | 145 g | 3 h 49 |
+| Main drawer, with scoop | 233 x 219 x 55 | 136 g | 3 h 03 |
+| Wedge drawer, each | 60 x 172 x 55 | 59 g | 1 h 39 |
+| **A 60 mm module** | 361 x 238 x 64 | **544 g** | **13 h 56** |
+| Top plate, each half | 187 x 238 x 12 | 121 g | 2 h 52 |
+| **An 8 mm top plate** | 361 x 238 x 12 | **241 g** | **5 h 43** |
+| A 30 mm module | | 350 g | 9 h 25 |
+| A 120 mm module | | 931 g | 22 h 51 |
+
+A module gains about 6.5 g and 9 minutes for each millimetre of
+height. A 60 mm module with a top plate is 785 g, which is 7 to
+16 EUR of PLA at the prices in `../docs/filaments-2026-11-12.md`. The
+two wedge drawers fit one plate, so a module is four plates and a top
+plate two.
+
+### Checks
+
+`python tools/riser_build.py check` exports every part and checks:
+
+- the numbers shared with the other `.scad` files are the same;
+- every part fits a 256 mm bed, up to a 200 mm module;
+- no two parts overlap: body, drawer, wedge drawer and plate, with the
+  drawers from closed to fully open, on a plate, under a plate, on
+  another module, at 30 and 60 mm;
+- nothing needs support. What remains are two short bridges: 10 mm over
+  the tip of each tongue, and a 2.4 mm dimple under each wedge drawer;
+- the straight-middle rule above.
+
+Also checked by hand on 2026-11-13: the file opens and previews in a real
+OpenSCAD 2021.01 (`tools/openscad-2021/Dockerfile`).
+
+### Test pieces, in `stl/tests/`
+
+Each checks one new fit. Print these before a whole part.
+
+| Pieces | PLA | What to look for |
+|---|---|---|
+| `test_step_left`, `test_step_right` | 42 g | The ring drops into fit-test ring 2 with a little play all round and sits flat. This is the stacking fit |
+| `test_hub_body`, `test_hub_drawer` | 24 g | The drawer end drops over the post, turns freely from shut to the stop, and its outside wall is flush when shut |
+| `test_front_left`, `test_front_right`, `test_front_drawer` | 55 g | The two fronts press together at the dovetail; the drawer front slides between the bay walls on the runners; the panel is flush; the scoop is comfortable |
+| `test_stop_body`, `test_stop_drawer` | 13 g | The tongue bends without cracking, its bump drops into the groove and holds against a pull, the tab frees it |
+| `test_seam_left`, `test_seam_right` | 19 g | The right block slides down over the left one's dovetail and sits snug |
+
+They are cut from 30 mm modules (the seam from a 40 mm one).
+
