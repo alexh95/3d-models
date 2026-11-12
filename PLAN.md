@@ -131,7 +131,7 @@ but not build.
 | 2 | Default way to open the drawer | The finger scoop, for now. Handles that replace it are planned (M4.1) |
 | 3 | Default wedge insert | A drawer that swivels out and cannot be taken out in use (M1.4). `open` stays as the second choice |
 | 4 | Top plate | A slab 8 mm tall in two halves, same seat on top and same step underneath as a module |
-| 5 | Site name and reach | `riser.alexh95.com`, public; admin pages reachable from the LAN and WireGuard only |
+| 5 | Site name and reach | **Desk Stack** at `deskstack.alexh95.com`, public, with `launchpad.alexh95.com` leading to the same site (W6). Admin pages reachable from the LAN and WireGuard only |
 | 6 | Requests and currency | Anyone with the link may fill in the form; costs in lei, catalogue kept in EUR |
 | 7 | Email | **Deferred.** The form and its pages get built. Submitting shows a "work in progress" notice; nothing is sent and nothing is stored (W4) |
 | 8 | Where the site's code lives | Its own repository made from the starter template, `C:\Projects\cc\riser-designer` |
@@ -581,8 +581,18 @@ its place.
 ### W6. Hosting on apollo
 
 - Compose service, data volume, backups, health check, release image.
-- **Alex's steps:** DNS record, proxy host and certificate, the data
-  folder, the admin and mail secrets.
+- **Two addresses, one site.** Alex likes both names and chose Desk Stack
+  as the main one (2026-11-13). The site is called Desk Stack and lives
+  at `deskstack.alexh95.com`; `launchpad.alexh95.com` redirects there at
+  the proxy. One address has
+  to be the real one: designs are kept in the browser, per address, so a
+  design saved under one name would be missing under the other. Share
+  links and request links always carry the main address. Swapping which
+  one is the main one is a setting, as long as it happens before people
+  start saving designs.
+- **Alex's steps:** two DNS records, a proxy host and certificate for the
+  main address, a redirect for the other, the data folder, the admin and
+  mail secrets.
 - Promotion by script, run when Alex asks.
 
 ### W7. Worth adding
