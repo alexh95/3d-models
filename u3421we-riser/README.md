@@ -9,8 +9,7 @@ designed yet.
 
 | File | What it is |
 |---|---|
-| `outline.scad` | Outline of the Dell base plate, 357.5 x 235 mm overall. Everything else is built from this. |
-| `interface_check.scad` | The Dell base as measured, and the seat on top of the riser that it drops into. |
+| `interface_check.scad` | The Dell base as measured (outline 357.5 x 235 mm overall), and the seat on top of the riser that it drops into. Self-contained: it needs no other files. |
 | `docs/outline-u3421we.png` | Dimensioned drawing of the outline. |
 | `docs/outline-u3421we-1to1-A4.pdf` | 1:1 paper template of the outline, two A4 pages. Print at 100 %. |
 | `docs/seat-section.png` | Cross-section of the seat with dimensions. |
