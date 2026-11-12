@@ -10,6 +10,9 @@ that seat are modelled. The riser itself is not designed yet.
 | File | What it is |
 |---|---|
 | `interface_check.scad` | The Dell base as measured (outline 357.5 x 235 mm overall), the seat on top of the riser that it drops into, and the fit-test ring. Self-contained: it needs no other files. |
+| `split_concepts.scad` | Rough block models of three ways to split a module into printable parts, with exploded and print-plate views. Self-contained. |
+| `joint_concepts.scad` | Rough samples of five ways to join two parts at a seam. Self-contained. |
+| `docs/concepts-exploded.png`, `docs/concepts-print-plates.png`, `docs/joint-concepts.png` | Pictures of those concepts. |
 | `stl/fit_test_left.stl`, `stl/fit_test_right.stl` | The fit-test ring, ready to slice. |
 | `docs/outline-u3421we.png` | Dimensioned drawing of the outline. |
 | `docs/outline-u3421we-1to1-A4.pdf` | 1:1 paper template of the outline, two A4 pages. Print at 100 %. |
