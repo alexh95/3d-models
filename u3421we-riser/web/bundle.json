@@ -1,0 +1,403 @@
+{
+ "bundle": 1,
+ "profile": "dell-u3421we",
+ "revision": "2026-11-13.029aabca",
+ "density_ref": 1.24,
+ "kinds": {
+  "module": {
+   "h": {
+    "min": 30,
+    "max": 200,
+    "step": 5,
+    "default": 60,
+    "ref": 60
+   },
+   "options": {
+    "front": {
+     "values": [
+      "scoop",
+      "plain"
+     ],
+     "default": "scoop"
+    },
+    "wedge_l": {
+     "values": [
+      "swivel",
+      "open"
+     ],
+     "default": "swivel"
+    },
+    "wedge_r": {
+     "values": [
+      "swivel",
+      "open"
+     ],
+     "default": "swivel"
+    }
+   },
+   "color_slots": [
+    "body",
+    "drawer",
+    "wedges"
+   ]
+  },
+  "plate": {
+   "h": {
+    "min": 7,
+    "max": 20,
+    "step": 1,
+    "default": 8,
+    "ref": 8
+   },
+   "options": {},
+   "color_slots": [
+    "body"
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "body_left",
+   "kind": "module",
+   "slot": "body",
+   "when": {},
+   "mesh": "meshes/body_left.stl",
+   "stretch": [
+    {
+     "z0": 22.9,
+     "z1": 54.0,
+     "share": 1
+    }
+   ],
+   "motion": null,
+   "bed": [
+    188,
+    239
+   ],
+   "est": {
+    "h": [
+     30,
+     60,
+     120
+    ],
+    "grams": [
+     98.9,
+     145.4,
+     238.5
+    ],
+    "minutes": [
+     162,
+     225,
+     349
+    ],
+    "source": "sliced"
+   }
+  },
+  {
+   "id": "body_right",
+   "kind": "module",
+   "slot": "body",
+   "when": {},
+   "mesh": "meshes/body_right.stl",
+   "stretch": [
+    {
+     "z0": 22.9,
+     "z1": 54.0,
+     "share": 1
+    }
+   ],
+   "motion": null,
+   "bed": [
+    181,
+    239
+   ],
+   "est": {
+    "h": [
+     30,
+     60,
+     120
+    ],
+    "grams": [
+     98.3,
+     144.9,
+     238.0
+    ],
+    "minutes": [
+     164,
+     229,
+     359
+    ],
+    "source": "sliced"
+   }
+  },
+  {
+   "id": "drawer_scoop",
+   "kind": "module",
+   "slot": "drawer",
+   "when": {
+    "front": "scoop"
+   },
+   "mesh": "meshes/drawer_scoop.stl",
+   "stretch": [
+    {
+     "z0": 23.6,
+     "z1": 45.4,
+     "share": 1
+    }
+   ],
+   "motion": {
+    "type": "slide",
+    "dir": [
+     0,
+     -1,
+     0
+    ],
+    "travel": 170.4
+   },
+   "bed": [
+    233,
+    219
+   ],
+   "est": {
+    "h": [
+     30,
+     60,
+     120
+    ],
+    "grams": [
+     91.8,
+     135.8,
+     223.9
+    ],
+    "minutes": [
+     129,
+     183,
+     286
+    ],
+    "source": "sliced"
+   }
+  },
+  {
+   "id": "drawer_plain",
+   "kind": "module",
+   "slot": "drawer",
+   "when": {
+    "front": "plain"
+   },
+   "mesh": "meshes/drawer_plain.stl",
+   "stretch": [
+    {
+     "z0": 23.6,
+     "z1": 59.4,
+     "share": 1
+    }
+   ],
+   "motion": {
+    "type": "slide",
+    "dir": [
+     0,
+     -1,
+     0
+    ],
+    "travel": 170.4
+   },
+   "bed": [
+    233,
+    219
+   ],
+   "est": {
+    "h": [
+     30,
+     60,
+     120
+    ],
+    "grams": [
+     93.0,
+     137.1,
+     225.2
+    ],
+    "minutes": [
+     130,
+     185,
+     288
+    ],
+    "source": "sliced"
+   }
+  },
+  {
+   "id": "wedge_swivel_l",
+   "kind": "module",
+   "slot": "wedges",
+   "when": {
+    "wedge_l": "swivel"
+   },
+   "mesh": "meshes/wedge_swivel_l.stl",
+   "stretch": [
+    {
+     "z0": 6.7,
+     "z1": 47.4,
+     "share": 1
+    }
+   ],
+   "motion": {
+    "type": "swivel",
+    "pivot": [
+     -129.22,
+     41.83
+    ],
+    "deg": 60
+   },
+   "bed": [
+    60,
+    172
+   ],
+   "est": {
+    "h": [
+     30,
+     60,
+     120
+    ],
+    "grams": [
+     30.5,
+     58.7,
+     115.2
+    ],
+    "minutes": [
+     55,
+     100,
+     189
+    ],
+    "source": "sliced"
+   }
+  },
+  {
+   "id": "wedge_swivel_r",
+   "kind": "module",
+   "slot": "wedges",
+   "when": {
+    "wedge_r": "swivel"
+   },
+   "mesh": "meshes/wedge_swivel_r.stl",
+   "stretch": [
+    {
+     "z0": 6.7,
+     "z1": 47.4,
+     "share": 1
+    }
+   ],
+   "motion": {
+    "type": "swivel",
+    "pivot": [
+     129.22,
+     41.83
+    ],
+    "deg": -60
+   },
+   "bed": [
+    60,
+    172
+   ],
+   "est": {
+    "h": [
+     30,
+     60,
+     120
+    ],
+    "grams": [
+     30.5,
+     58.7,
+     115.2
+    ],
+    "minutes": [
+     55,
+     99,
+     188
+    ],
+    "source": "sliced"
+   }
+  },
+  {
+   "id": "plate_left",
+   "kind": "plate",
+   "slot": "body",
+   "when": {},
+   "mesh": "meshes/plate_left.stl",
+   "stretch": [
+    {
+     "z0": 6.7,
+     "z1": 8.0,
+     "share": 1
+    }
+   ],
+   "motion": null,
+   "bed": [
+    188,
+    239
+   ],
+   "est": {
+    "h": [
+     7,
+     8,
+     20
+    ],
+    "grams": [
+     113.5,
+     121.2,
+     209.8
+    ],
+    "minutes": [
+     162,
+     172,
+     280
+    ],
+    "source": "sliced"
+   }
+  },
+  {
+   "id": "plate_right",
+   "kind": "plate",
+   "slot": "body",
+   "when": {},
+   "mesh": "meshes/plate_right.stl",
+   "stretch": [
+    {
+     "z0": 6.7,
+     "z1": 8.0,
+     "share": 1
+    }
+   ],
+   "motion": null,
+   "bed": [
+    181,
+    239
+   ],
+   "est": {
+    "h": [
+     7,
+     8,
+     20
+    ],
+    "grams": [
+     112.4,
+     120.1,
+     207.9
+    ],
+    "minutes": [
+     161,
+     171,
+     279
+    ],
+    "source": "sliced"
+   }
+  }
+ ],
+ "seat": {
+  "lip_h": 4.2,
+  "moving_parts_above": 4.6
+ },
+ "ghost": {
+  "black": "meshes/dell_black.stl",
+  "plate": "meshes/dell_plate.stl",
+  "note": "the monitor's base, with Z = 0 on the pocket floor of the top item"
+ }
+}
