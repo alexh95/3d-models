@@ -10,7 +10,7 @@
 // The two front corners of the plate sit on Y = 0, centred on X = 0.
 
 /* [What to show] */
-view = "exploded"; // [exploded, seated, section, seat only, dell base only, outline only]
+view = "exploded"; // [exploded, seated, section, seat only, dell base only, outline only, fit test: assembled, fit test: with dell base, fit test: left half, fit test: right half]
 
 /* [Dell plate outline] */
 // Width across the rear corners, before rounding
@@ -42,8 +42,22 @@ dell_plate_t = 6;
 seat_lip_w = 1.2;
 // Height of the lip: 5 credit cards, leaving 1 card of air under the overhang
 seat_lip_h = 3.8;
+// Small lead-in bevel on the inside top edge of the lip, so the base
+// centres itself as it drops in
+seat_lip_bevel = 0.4;
 // Deck thickness. Display only for now.
 seat_deck_t = 2.0;
+
+/* [Fit-test ring] */
+// Thickness of the flat band the lip stands on
+test_band_t = 1.2;
+// Width of the band, measured inward from the plate outline
+test_band_w = 10;
+// Radius of the wider patch at each corner, for the rubber feet to land on
+test_corner_pad_r = 45;
+// Gap left around the dovetail that joins the two halves. Raise it if the
+// halves will not press together, lower it if they are loose.
+test_joint_gap = 0.2;
 
 /* [Hidden] */
 _arc_steps = 96;
@@ -131,18 +145,110 @@ module dell_base() {
                 plate_outline_2d();
 }
 
-// Top of the riser: a flat deck with a low lip round the edge.
-// The outside of the lip is exactly the Dell plate outline.
+// Ring between two insets of the plate outline.
+module outline_ring_2d(outer_inset, inner_inset) {
+    difference() {
+        plate_outline_2d(inset = outer_inset);
+        plate_outline_2d(inset = inner_inset);
+    }
+}
+
+// The lip that tucks under the Dell plate's overhang. Its outside face is
+// exactly the plate outline. Stands on Z = 0.
+module seat_lip() {
+    bevel = min(seat_lip_bevel, seat_lip_w / 2);
+    steps = bevel > 0 ? 2 : 0;
+    linear_extrude(seat_lip_h - bevel)
+        outline_ring_2d(0, seat_lip_w);
+    for (i = [0 : 1 : steps - 1])
+        translate([0, 0, seat_lip_h - bevel + i * bevel / steps])
+            linear_extrude(bevel / steps)
+                outline_ring_2d(0, seat_lip_w - (i + 1) * bevel / steps);
+}
+
+// Top of the riser: a flat deck with the lip round the edge.
 module seat() {
     color("SteelBlue") section_cut() {
         translate([0, 0, -seat_deck_t])
             linear_extrude(seat_deck_t)
                 plate_outline_2d();
-        linear_extrude(seat_lip_h)
-            difference() {
-                plate_outline_2d();
-                plate_outline_2d(inset = seat_lip_w);
+        seat_lip();
+    }
+}
+
+// ---------------------------------------------------------- fit-test ring
+// A throw-away print for checking the seat against the real monitor base:
+// the same lip as the riser will have, on a narrow flat band instead of a
+// full deck. Split down the centre line so each half fits the P1S bed, and
+// joined by a dovetail at the front and the rear.
+
+_test_joint_len = 7;       // how far the dovetail reaches across the seam
+_test_joint_neck = 3;      // half-width at the seam
+_test_joint_head = 5;      // half-width at the far end
+_test_seam_pad_w = 18;     // band width next to the seam
+_test_seam_pad_l = 14;     // how far that wider band runs each side of the seam
+
+function _test_joint_inset() = seat_lip_w + 2.5 + _test_joint_head;
+// Y of the two dovetails: [front, rear]
+function _test_joint_ys() = [
+    plate_front_y(0) + _test_joint_inset(),
+    plate_rear_y(0) - _test_joint_inset()
+];
+
+module _test_dovetail_2d(grow = 0) {
+    offset(delta = grow)
+        polygon([
+            [-0.01, -_test_joint_neck], [_test_joint_len, -_test_joint_head],
+            [_test_joint_len, _test_joint_head], [-0.01, _test_joint_neck]
+        ]);
+}
+
+// Flat band: narrow along the edges, wider at the corners and at the seam.
+module _test_band_2d() {
+    corners = [
+        [-plate_rear_w / 2, plate_rear_corner_y()], [plate_rear_w / 2, plate_rear_corner_y()],
+        [-plate_front_w / 2, 0], [plate_front_w / 2, 0]
+    ];
+    outline_ring_2d(0, test_band_w);
+    intersection() {
+        plate_outline_2d();
+        union() {
+            for (c = corners) translate(c) circle(r = test_corner_pad_r, $fn = 64);
+            translate([-_test_seam_pad_l, plate_front_y(0) - 1])
+                square([2 * _test_seam_pad_l, _test_seam_pad_w + 1]);
+            translate([-_test_seam_pad_l, plate_rear_y(0) - _test_seam_pad_w])
+                square([2 * _test_seam_pad_l, _test_seam_pad_w + 1]);
+        }
+    }
+}
+
+// One half of the ring. side = -1 is the left half (it carries the
+// dovetail tabs), side = +1 the right half (it carries the sockets).
+// The pocket floor is at Z = 0, as in the other views.
+module test_ring_half(side) {
+    big = plate_rear_w + plate_depth;
+    translate([0, 0, -test_band_t])
+        linear_extrude(test_band_t) {
+            if (side < 0) {
+                intersection() {
+                    _test_band_2d();
+                    translate([-big, -big]) square([big, 2 * big]);
+                }
+                for (y = _test_joint_ys()) translate([0, y]) _test_dovetail_2d();
+            } else {
+                difference() {
+                    intersection() {
+                        _test_band_2d();
+                        translate([0, -big]) square([big, 2 * big]);
+                    }
+                    for (y = _test_joint_ys())
+                        translate([0, y]) _test_dovetail_2d(grow = test_joint_gap);
+                }
             }
+        }
+    intersection() {
+        seat_lip();
+        translate([side < 0 ? -big : 0, -big, -1]) cube([big, 2 * big, seat_lip_h + 2]);
     }
 }
 
@@ -159,8 +265,20 @@ if (view == "exploded") {
     seat();
 } else if (view == "dell base only") {
     dell_base();
-} else {
+} else if (view == "outline only") {
     plate_outline_2d();
+} else if (view == "fit test: assembled") {
+    color("SteelBlue") test_ring_half(-1);
+    color("LightSkyBlue") test_ring_half(1);
+} else if (view == "fit test: with dell base") {
+    color("SteelBlue") test_ring_half(-1);
+    color("LightSkyBlue") test_ring_half(1);
+    %dell_base();
+} else if (view == "fit test: left half") {
+    // As printed: band flat on the bed, lip up
+    translate([0, 0, test_band_t]) test_ring_half(-1);
+} else if (view == "fit test: right half") {
+    translate([0, 0, test_band_t]) test_ring_half(1);
 }
 
 echo(str("Clearance under the overhang: ", dell_black_h - seat_lip_h, " mm"));
