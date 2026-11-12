@@ -29,29 +29,37 @@ plate_rear_corner_r = 7;
 plate_front_corner_r = 3.5;
 
 /* [Dell base, as measured] */
-// The silver top plate overhangs the black lower body by about this much
-dell_overhang = 2.0;
-// Height of the black body below the overhang: 6 credit cards x 0.76 mm
+// The silver top plate overhangs the black lower body by this much. Found
+// with the first fit-test ring: a lip reaching 1.2 inside the plate edge
+// touched the black body with no play.
+dell_overhang = 1.2;
+// Height of the black body below the overhang: 6 credit cards x 0.76 mm.
+// The first fit test suggests it is really a little more than this.
 dell_black_h = 4.56;
 // Thickness of the top plate. Display only, nothing depends on it.
 dell_plate_t = 6;
 
 /* [Seat on the top module] */
-// Width of the lip that tucks under the overhang. Kept well under the
-// overhang so the black body cannot bind in the pocket.
-seat_lip_w = 1.2;
-// Height of the lip: 5 credit cards, leaving 1 card of air under the overhang
-seat_lip_h = 3.8;
-// Small lead-in bevel on the inside top edge of the lip, so the base
-// centres itself as it drops in
-seat_lip_bevel = 0.4;
+// Where the inside face of the lip sits, measured inward from the edge of
+// the silver plate. The black body is dell_overhang inside that edge, so
+// the side play is dell_overhang minus this.
+seat_lip_inner_inset = 0.2;
+// Thickness of the lip. Its outside face ends up this much, minus the inset
+// above, outside the edge of the silver plate.
+seat_lip_w = 1.8;
+// Height of the lip above the pocket floor
+seat_lip_h = 4.2;
+// Radius of the two fillets on the inside of the lip: a round-over on its
+// top inside edge and a cove where it meets the pocket floor. They guide
+// the base into place as it drops in.
+seat_fillet_r = 0.6;
 // Deck thickness. Display only for now.
 seat_deck_t = 2.0;
 
 /* [Fit-test ring] */
 // Thickness of the flat band the lip stands on
 test_band_t = 1.2;
-// Width of the band, measured inward from the plate outline
+// Width of the band, measured inward from the edge of the silver plate
 test_band_w = 10;
 // Radius of the wider patch at each corner, for the rubber feet to land on
 test_corner_pad_r = 45;
@@ -61,6 +69,8 @@ test_joint_gap = 0.2;
 
 /* [Hidden] */
 _arc_steps = 96;
+// Height of the slices the two fillets are built from
+_fillet_dz = 0.1;
 
 // ---------------------------------------------------------------- outline
 // Widths and depth above are measured to the sharp corners, before the
@@ -153,17 +163,41 @@ module outline_ring_2d(outer_inset, inner_inset) {
     }
 }
 
-// The lip that tucks under the Dell plate's overhang. Its outside face is
-// exactly the plate outline. Stands on Z = 0.
+// Outside face of the lip, as an inset from the edge of the silver plate.
+// Negative means outside the plate edge. This is also the outline of the
+// riser body.
+function seat_lip_outer_inset() = seat_lip_inner_inset - seat_lip_w;
+
+// The riser's own outline: the Dell plate outline grown to the outside
+// face of the lip.
+module body_outline_2d() {
+    plate_outline_2d(inset = seat_lip_outer_inset());
+}
+
+// The lip that surrounds the black lower body of the Dell base.
+// Stands on Z = 0, the pocket floor.
 module seat_lip() {
-    bevel = min(seat_lip_bevel, seat_lip_w / 2);
-    steps = bevel > 0 ? 2 : 0;
-    linear_extrude(seat_lip_h - bevel)
-        outline_ring_2d(0, seat_lip_w);
-    for (i = [0 : 1 : steps - 1])
-        translate([0, 0, seat_lip_h - bevel + i * bevel / steps])
-            linear_extrude(bevel / steps)
-                outline_ring_2d(0, seat_lip_w - (i + 1) * bevel / steps);
+    r = max(0, min(seat_fillet_r, seat_lip_w - 0.4, seat_lip_h / 2));
+    n = r > 0 ? ceil(r / _fillet_dz) : 0;
+    dz = n > 0 ? r / n : 0;
+    outer = seat_lip_outer_inset();
+    // Straight middle part
+    translate([0, 0, r])
+        linear_extrude(seat_lip_h - 2 * r)
+            outline_ring_2d(outer, seat_lip_inner_inset);
+    for (i = [0 : 1 : n - 1]) {
+        zm = (i + 0.5) * dz;
+        // Cove at the foot of the lip: reaches out over the pocket floor
+        cove = r - sqrt(r * r - pow(r - zm, 2));
+        translate([0, 0, i * dz])
+            linear_extrude(dz)
+                outline_ring_2d(outer, seat_lip_inner_inset + cove);
+        // Round-over on the top inside edge
+        back = r - sqrt(r * r - zm * zm);
+        translate([0, 0, seat_lip_h - r + i * dz])
+            linear_extrude(dz)
+                outline_ring_2d(outer, seat_lip_inner_inset - back);
+    }
 }
 
 // Top of the riser: a flat deck with the lip round the edge.
@@ -171,7 +205,7 @@ module seat() {
     color("SteelBlue") section_cut() {
         translate([0, 0, -seat_deck_t])
             linear_extrude(seat_deck_t)
-                plate_outline_2d();
+                body_outline_2d();
         seat_lip();
     }
 }
@@ -188,7 +222,7 @@ _test_joint_head = 5;      // half-width at the far end
 _test_seam_pad_w = 18;     // band width next to the seam
 _test_seam_pad_l = 14;     // how far that wider band runs each side of the seam
 
-function _test_joint_inset() = seat_lip_w + 2.5 + _test_joint_head;
+function _test_joint_inset() = seat_lip_inner_inset + seat_fillet_r + 2 + _test_joint_head;
 // Y of the two dovetails: [front, rear]
 function _test_joint_ys() = [
     plate_front_y(0) + _test_joint_inset(),
@@ -209,15 +243,15 @@ module _test_band_2d() {
         [-plate_rear_w / 2, plate_rear_corner_y()], [plate_rear_w / 2, plate_rear_corner_y()],
         [-plate_front_w / 2, 0], [plate_front_w / 2, 0]
     ];
-    outline_ring_2d(0, test_band_w);
+    outline_ring_2d(seat_lip_outer_inset(), test_band_w);
     intersection() {
-        plate_outline_2d();
+        body_outline_2d();
         union() {
             for (c = corners) translate(c) circle(r = test_corner_pad_r, $fn = 64);
-            translate([-_test_seam_pad_l, plate_front_y(0) - 1])
-                square([2 * _test_seam_pad_l, _test_seam_pad_w + 1]);
+            translate([-_test_seam_pad_l, plate_front_y(0) - 5])
+                square([2 * _test_seam_pad_l, _test_seam_pad_w + 5]);
             translate([-_test_seam_pad_l, plate_rear_y(0) - _test_seam_pad_w])
-                square([2 * _test_seam_pad_l, _test_seam_pad_w + 1]);
+                square([2 * _test_seam_pad_l, _test_seam_pad_w + 5]);
         }
     }
 }
@@ -281,5 +315,6 @@ if (view == "exploded") {
     translate([0, 0, test_band_t]) test_ring_half(1);
 }
 
-echo(str("Clearance under the overhang: ", dell_black_h - seat_lip_h, " mm"));
-echo(str("Side play of the black body in the pocket: ", dell_overhang - seat_lip_w, " mm each side"));
+echo(str("Air between the top of the lip and the overhang: at least ", dell_black_h - seat_lip_h, " mm"));
+echo(str("Side play of the black body in the pocket: ", dell_overhang - seat_lip_inner_inset, " mm each side"));
+echo(str("Lip stands ", -seat_lip_outer_inset(), " mm outside the edge of the silver plate"));
