@@ -2,8 +2,12 @@
 
 A stackable, 3D-printed riser with the same footprint as the monitor's stand
 base, to be printed on a Bambu Lab P1S or P1P (256 mm bed). Work in progress:
-so far only the monitor's base, the seat it sits in, and a fit-test ring for
-that seat are modelled. The riser itself is not designed yet.
+the monitor's base, the seat it sits in and a fit-test ring are modelled, and
+the way to split a module into parts is chosen. The riser itself is not
+designed yet.
+
+**[DESIGN.md](DESIGN.md) has the measurements, decisions, test history and
+next steps.**
 
 ## Files
 
@@ -14,6 +18,7 @@ that seat are modelled. The riser itself is not designed yet.
 | `joint_concepts.scad` | Rough samples of five ways to join two parts at a seam. Self-contained. |
 | `docs/concepts-exploded.png`, `docs/concepts-print-plates.png`, `docs/joint-concepts.png` | Pictures of those concepts. |
 | `stl/fit_test_left.stl`, `stl/fit_test_right.stl` | The fit-test ring, ready to slice. |
+| `tools/` | Scripts that traced the outline, draw the diagrams and measure parts. |
 | `docs/outline-u3421we.png` | Dimensioned drawing of the outline. |
 | `docs/outline-u3421we-1to1-A4.pdf` | 1:1 paper template of the outline, two A4 pages. Print at 100 %. |
 | `docs/seat-section.png` | Cross-section of the seat with dimensions. |
