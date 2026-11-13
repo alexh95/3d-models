@@ -160,6 +160,7 @@ the front and rear. About 17 g per half, one half per plate.
 | 2026-11-13 | The lip stays 1.8 thick, so the riser's outside shrinks by the same 0.6 mm each side. | Design, section 4 |
 | 2026-11-13 | Print order: ring 3 and the test pieces, then a whole top plate as the final test. | Owner |
 | 2026-11-13 | Ring 3 confirmed. The seat stays as in section 4 (third version). | Owner, after the test |
+| 2026-11-13 | The top plate is sliced with 10 percent infill and 4 top layers, 3 walls: 200 g a pair instead of 239 g (section 12). | Owner, on the sliced comparison |
 | 2026-11-13 | The wedge drawers swivel out by default and cannot be taken out in use. | Owner |
 | 2026-11-13 | The finger scoop is the drawer pull for now; handles are planned, with a Gridfinity drawer, several drawers per module and inner drawers (`../PLAN.md`, M4). | Owner |
 | 2026-11-13 | Top plate: 8 mm, two halves, seam on the centre line. | Owner, on the plan's recommendation |
@@ -283,6 +284,8 @@ Collected during the session. None of these is decided.
 
 - The third seat (0.4 mm of play) is confirmed with ring 3 only. A whole
   top plate is the final test.
+- The top plate's lighter settings (10 percent infill, 4 top layers) have
+  not been printed. The pocket floor's surface is the thing to look at.
 - Nothing in `riser.scad` has been printed. The fits that are new, each
   with a test piece: the stacking step, the drawer's slide and scoop, the
   drawer stop, the wedge drawer's hub and stops, the rear seam.
@@ -519,7 +522,8 @@ and `riser_build.py check` proves it at 30, 45, 90, 120 and 200 mm.
 
 Sliced with Bambu Studio for the P1P on 2026-11-13: generic PLA, 0.20 mm
 layers, 3 walls, 15 percent infill, one part per plate
-(`tools/sliced.json`).
+(`tools/sliced.json`). The top plate is sliced lighter, with 10 percent
+infill and 4 top layers; see "The top plate's settings" below.
 
 | Part | Size, mm | PLA | Print time |
 |---|---|---|---|
@@ -528,16 +532,48 @@ layers, 3 walls, 15 percent infill, one part per plate
 | Main drawer, with scoop | 233 x 217 x 55 | 135 g | 3 h 04 |
 | Wedge drawer, each | 59 x 171 x 55 | 58 g | 1 h 39 |
 | **A 60 mm module** | 359 x 237 x 64 | **540 g** | **13 h 54** |
-| Top plate, each half | 187 x 237 x 12 | 120 g | 2 h 50 |
-| **An 8 mm top plate** | 359 x 237 x 12 | **239 g** | **5 h 40** |
+| Top plate, each half | 187 x 237 x 12 | 100 g | 2 h 26 |
+| **An 8 mm top plate** | 359 x 237 x 12 | **200 g** | **4 h 52** |
 | A 30 mm module | | 347 g | 9 h 23 |
 | A 120 mm module | | 925 g | 22 h 51 |
 
 A module gains about 6.4 g and 9 minutes for each millimetre of
-height. A 60 mm module with a top plate is 779 g, which is 7 to
-16 EUR of PLA at the prices in `../docs/filaments-2026-11-12.md`. The
+height. A 60 mm module with a top plate is 740 g, which is 7 to
+15 EUR of PLA at the prices in `../docs/filaments-2026-11-12.md`. The
 two wedge drawers fit one plate, so a module is four plates and a top
 plate two.
+
+### The top plate's settings
+
+The plate is a solid slab, so the slicer decides most of its weight. Both
+halves of the 8 mm plate, sliced with different settings on 2026-11-13:
+
+| Walls | Infill | Top layers | Pair | Time |
+|---|---|---|---|---|
+| 3 | 15 percent grid | 5 | 239 g | 5 h 39 |
+| 3 | 10 percent grid | 5 | 214 g | 5 h 09 |
+| **3** | **10 percent grid** | **4** | **200 g** | **4 h 52** |
+| 3 | 10 percent gyroid | 4 | 198 g | 4 h 59 |
+| 3 | 8 percent grid | 4 | 189 g | 4 h 39 |
+| 2 | 10 percent grid | 4 | 195 g | 4 h 46 |
+| 2 | 10 percent grid | 3 | 181 g | 4 h 29 |
+| 2 | 15 percent lightning | 5 | 194 g | 5 h 20 |
+
+Of the 239 g, about 116 g is the eight solid top and bottom layers and
+about 75 g is the infill. The bold row is the one in use
+(`PLATE_SETUP` in `tools/riser_build.py`):
+
+- **10 percent infill, 4 top layers.** In Bambu Studio the top shell
+  thickness has to go to 0.8 mm too, or the slicer keeps five layers.
+- **3 walls stay.** A wall less saves 4 g, and the walls make the lip,
+  the dovetails and the step.
+- **No further.** With 3 top layers or 8 percent infill the pocket floor
+  is likely to show the infill or sag between its lines. Lightning infill
+  leaves the bottom skin unconnected to the top.
+- The outside shape does not depend on these settings, so the seat test
+  with a whole plate stays valid.
+
+The modules keep 3 walls, 15 percent and 5 top layers.
 
 ### Checks
 

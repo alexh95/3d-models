@@ -24,11 +24,12 @@ next steps.** `../PLAN.md` has the phases, the designer website among them.
 | Body, two halves | `body_left.stl`, `body_right.stl` | 144 g each | 3 h 46 each |
 | Main drawer | `drawer_scoop.stl` (or `drawer_plain.stl`) | 135 g | 3 h 04 |
 | Wedge drawers | `wedge_swivel_l.stl`, `wedge_swivel_r.stl` | 58 g each | 1 h 39 each |
-| Top plate, two halves | `stl/plate_8mm/plate_left.stl`, `plate_right.stl` | 120 g each | 2 h 50 each |
+| Top plate, two halves | `stl/plate_8mm/plate_left.stl`, `plate_right.stl` | 100 g each | 2 h 26 each |
 
 A 60 mm module is 540 g and about 14 hours of printing; an 8 mm top plate
-is 239 g and under 6 hours. The numbers are Bambu Studio's, for PLA at
-0.20 mm with 3 walls and 15 percent infill.
+is 200 g and under 5 hours. The numbers are Bambu Studio's, for PLA at
+0.20 mm with 3 walls and 15 percent infill, and for the top plate with
+10 percent infill and 4 top layers.
 
 ![Drawers open](docs/riser-open.png)
 
@@ -39,7 +40,10 @@ is 239 g and under 6 hours. The numbers are Bambu Studio's, for PLA at
 2. Print every part as exported: flat on the bed, no supports, 0.20 mm
    layers, 3 walls. One body half per plate, the drawer on its own plate,
    the two wedge drawers together.
-3. PLA first. The halves are large flat parts, so watch the corners for
+3. The top plate can be sliced lighter: 10 percent infill and 4 top
+   layers, with the top shell thickness set to 0.8 mm so the slicer does
+   not add the fifth layer back. Keep the 3 walls.
+4. PLA first. The halves are large flat parts, so watch the corners for
    lifting.
 
 ## Putting it together

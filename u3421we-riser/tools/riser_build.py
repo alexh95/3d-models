@@ -356,8 +356,13 @@ def cmd_stl(args):
 # ------------------------------------------------------------------ slice
 
 STUDIO = Path(os.environ.get("BAMBU_STUDIO", r"C:\Program Files\Bambu Studio"))
+LAYER = 0.2
 SLICE_SETUP = {"printer": "Bambu Lab P1P 0.4 nozzle", "process": "0.20mm Standard @BBL P1P",
-               "filament": "Generic PLA", "bed": "Textured PEI Plate", "walls": 3, "infill": 15}
+               "filament": "Generic PLA", "bed": "Textured PEI Plate", "walls": 3, "infill": 15,
+               "top_layers": 5}
+# The top plate is a slab, and most of its weight is solid layers and infill. Thinner
+# infill and one top layer fewer take 40 g off a pair; fewer walls would save only 4 g.
+PLATE_SETUP = {**SLICE_SETUP, "infill": 10, "top_layers": 4}
 
 
 def studio_profile(kind, name):
@@ -371,15 +376,18 @@ def studio_profile(kind, name):
     return merged
 
 
-def slice_stl(stl, folder):
+def slice_stl(stl, folder, setup=SLICE_SETUP):
     """Slices one STL on its own plate. Returns (grams, minutes)."""
     folder = Path(folder)
     files = {}
     for kind, name, changes in [
-            ("machine", SLICE_SETUP["printer"], {}),
-            ("process", SLICE_SETUP["process"], {"wall_loops": str(SLICE_SETUP["walls"]),
-                                                 "sparse_infill_density": "%d%%" % SLICE_SETUP["infill"]}),
-            ("filament", SLICE_SETUP["filament"], {})]:
+            ("machine", setup["printer"], {}),
+            # The slicer keeps whichever is more of the layer count and the thickness, so both are set
+            ("process", setup["process"], {"wall_loops": str(setup["walls"]),
+                                           "sparse_infill_density": "%d%%" % setup["infill"],
+                                           "top_shell_layers": str(setup["top_layers"]),
+                                           "top_shell_thickness": "%.1f" % (setup["top_layers"] * LAYER)}),
+            ("filament", setup["filament"], {})]:
         files[kind] = folder / (kind + ".json")
         files[kind].write_text(json.dumps({**studio_profile(kind, name), **changes, "name": name,
                                            "from": "system", "type": kind}), encoding="utf-8")
@@ -388,7 +396,7 @@ def slice_stl(stl, folder):
         out.unlink()
     run = subprocess.run([str(STUDIO / "bambu-studio.exe"), "--slice", "0",
                           "--load-settings", "%s;%s" % (files["machine"], files["process"]),
-                          "--load-filaments", str(files["filament"]), "--curr-bed-type", SLICE_SETUP["bed"],
+                          "--load-filaments", str(files["filament"]), "--curr-bed-type", setup["bed"],
                           "--arrange", "1", "--orient", "0", "--export-3mf", out.name,
                           "--outputdir", str(folder), str(Path(stl).resolve())],
                          cwd=folder, capture_output=True, text=True, timeout=900)
@@ -403,13 +411,15 @@ def slice_stl(stl, folder):
 
 
 def cmd_slice(args):
-    result = {"setup": SLICE_SETUP, "sliced_on": datetime.date.today().isoformat(), "parts": {}}
+    result = {"setup": SLICE_SETUP, "plate_setup": PLATE_SETUP,
+              "sliced_on": datetime.date.today().isoformat(), "parts": {}}
     with tempfile.TemporaryDirectory() as tmp:
-        jobs = [(p, "module_h", HEIGHTS) for p in MODULE_PARTS] + [(p, "plate_h", PLATE_HEIGHTS) for p in PLATE_PARTS]
-        for (ident, part, defs, _, _), key, heights in jobs:
+        jobs = ([(p, "module_h", HEIGHTS, SLICE_SETUP) for p in MODULE_PARTS]
+                + [(p, "plate_h", PLATE_HEIGHTS, PLATE_SETUP) for p in PLATE_PARTS])
+        for (ident, part, defs, _, _), key, heights, setup in jobs:
             for height in heights:
                 _, _, stl = export(part, {**defs, key: height}, tmp, ident)
-                numbers = slice_stl(stl, tmp)
+                numbers = slice_stl(stl, tmp, setup)
                 if numbers is None:
                     print("%-15s %3s mm  slicing failed" % (ident, height))
                     continue
@@ -491,7 +501,8 @@ def cmd_web(args):
         for name in ("dell_black", "dell_plate"):
             export(name, WEB, meshes, name)
         nums = openscad(Path(tmp) / "nums.stl", {"part": "dell_black"})
-    digest = hashlib.sha256(SCAD.read_bytes()).hexdigest()[:8]
+    # The model and the slicer's numbers both: new estimates are a new revision too
+    digest = hashlib.sha256(SCAD.read_bytes() + (SLICED.read_bytes() if SLICED.exists() else b"")).hexdigest()[:8]
     bundle = {
         "bundle": 1,
         "profile": "dell-u3421we",

@@ -5,7 +5,17 @@
   "filament": "Generic PLA",
   "bed": "Textured PEI Plate",
   "walls": 3,
-  "infill": 15
+  "infill": 15,
+  "top_layers": 5
+ },
+ "plate_setup": {
+  "printer": "Bambu Lab P1P 0.4 nozzle",
+  "process": "0.20mm Standard @BBL P1P",
+  "filament": "Generic PLA",
+  "bed": "Textured PEI Plate",
+  "walls": 3,
+  "infill": 10,
+  "top_layers": 4
  },
  "sliced_on": "2026-11-13",
  "parts": {
@@ -95,30 +105,30 @@
   },
   "plate_left": {
    "7": {
-    "grams": 112.5,
-    "minutes": 161
+    "grams": 94.7,
+    "minutes": 140
    },
    "8": {
-    "grams": 120.2,
-    "minutes": 171
+    "grams": 100.3,
+    "minutes": 147
    },
    "20": {
-    "grams": 207.9,
-    "minutes": 278
+    "grams": 163.8,
+    "minutes": 225
    }
   },
   "plate_right": {
    "7": {
-    "grams": 111.5,
-    "minutes": 160
+    "grams": 93.8,
+    "minutes": 138
    },
    "8": {
-    "grams": 119.1,
-    "minutes": 169
+    "grams": 99.4,
+    "minutes": 145
    },
    "20": {
-    "grams": 206.2,
-    "minutes": 277
+    "grams": 162.3,
+    "minutes": 223
    }
   }
  }

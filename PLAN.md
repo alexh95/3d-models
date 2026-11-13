@@ -136,7 +136,7 @@ but not build.
 | 1 | Fit-test ring 2 | Counted as passed, then tested the same day: a bit too loose. The seat shrinks by 0.6 mm each side in every model and test piece (`DESIGN.md` section 4). Ring 3 confirmed the new seat on 2026-11-13. Still to print: the test pieces, then a whole top plate as the final test |
 | 2 | Default way to open the drawer | The finger scoop, for now. Handles that replace it are planned (M4.1) |
 | 3 | Default wedge insert | A drawer that swivels out and cannot be taken out in use (M1.4). `open` stays as the second choice |
-| 4 | Top plate | A slab 8 mm tall in two halves, same seat on top and same step underneath as a module |
+| 4 | Top plate | A slab 8 mm tall in two halves, same seat on top and same step underneath as a module. Sliced lighter than the module: 10 percent infill and 4 top layers, 200 g a pair instead of 239 g (`DESIGN.md` section 12) |
 | 5 | Site name and reach | **Desk Stack** at `deskstack.alexh95.com`, public, with `launchpad.alexh95.com` leading to the same site (W6). Admin pages reachable from the LAN and WireGuard only |
 | 6 | Requests and currency | Anyone with the link may fill in the form; costs in lei, catalogue kept in EUR |
 | 7 | Email | **Deferred.** The form and its pages get built. Submitting shows a "work in progress" notice; nothing is sent and nothing is stored (W4) |
@@ -224,7 +224,7 @@ with a `part` parameter, so the outline and seat numbers exist once in it.
 12): steps 1 to 7 and 9 are done on the computer, step 8's five test
 pieces are exported and wait for the printer. Sliced, a 60 mm module is
 540 g and 13 h 54 over four plates, wedge drawers included; with an 8 mm
-top plate, 779 g and 7 to 16 EUR of PLA. Not built from step 5: the
+top plate, 740 g and 7 to 15 EUR of PLA. Not built from step 5: the
 recesses for stick-on feet, and a clearance band for the monitor's own
 feet. The top plate under the monitor takes the place of the second.
 
@@ -239,8 +239,9 @@ feet. The top plate under the monitor takes the place of the second.
 - **Build.** `plate_h` 8 mm by default (7 is the least the step and its
   chamfer allow). Printed flat, right way up, as a solid slab with the
   slicer's infill; no bridging, no supports. Two halves with the flat
-  dovetail the fit-test ring already proved. Sliced: 239 g a pair,
-  5 h 40.
+  dovetail the fit-test ring already proved. Sliced at 10 percent infill
+  and 4 top layers: 200 g a pair, 4 h 52 (239 g and 5 h 40 at the
+  module's settings).
 - **Seam on the centre line.** An off-centre seam, staggered like
   brickwork, was the other idea. It would not hold a stack together any
   better: the step of the upper part sits *inside* the lip of the lower
