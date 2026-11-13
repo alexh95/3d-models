@@ -36,7 +36,7 @@ bed = 256;
 
 /* [Seat, from the fit tests] */
 // Inside face of the lip, measured inward from the edge of the silver plate
-seat_lip_inner_inset = 0.2;
+seat_lip_inner_inset = 0.8;
 // Lip thickness
 seat_lip_w = 1.8;
 // Lip height above the pocket floor

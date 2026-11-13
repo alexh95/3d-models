@@ -42,8 +42,9 @@ dell_plate_t = 6;
 /* [Seat on the top module] */
 // Where the inside face of the lip sits, measured inward from the edge of
 // the silver plate. The black body is dell_overhang inside that edge, so
-// the side play is dell_overhang minus this.
-seat_lip_inner_inset = 0.2;
+// the side play is dell_overhang minus this. Ring 1 had 1.2 here (no
+// play), ring 2 had 0.2 (1.0 play, too loose); 0.8 leaves 0.4 each side.
+seat_lip_inner_inset = 0.8;
 // Thickness of the lip. Its outside face ends up this much, minus the inset
 // above, outside the edge of the silver plate.
 seat_lip_w = 1.8;

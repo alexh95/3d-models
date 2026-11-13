@@ -4,11 +4,12 @@ Everything decided, measured and learned so far, so the work can continue
 from the repository alone. Last updated 2026-11-13.
 
 **Status:** the monitor's base outline is confirmed and the seat it sits in
-has been test-printed twice. The riser is designed in `riser.scad` on
+has been test-printed three times. The riser is designed in `riser.scad` on
 option A: two body halves, a main drawer, two swivelling wedge drawers and
 a stackable top plate, with the module's height as a parameter (section
-12). Nothing of it has been printed yet; five small test pieces come
-first.
+12). Nothing of it has been printed yet. The seat is in its third version
+(section 4), which fit-test ring 3 confirmed. Five small test pieces come
+next, then a whole top plate as the final test of the seat.
 
 ## 1. What is being built
 
@@ -107,22 +108,29 @@ Measurements:
 The monitor's black lower body drops into a shallow pocket on top of the
 riser. A lip surrounds it.
 
-Current version (second), all set by the owner after the first test:
+Current version (third). The owner set the second version after the first
+test, and after the second test asked for it 0.6 mm smaller each side:
 
 | Parameter | Value, mm |
 |---|---|
-| `seat_lip_inner_inset`, inside face of the lip, inward from the silver plate edge | 0.2 |
+| `seat_lip_inner_inset`, inside face of the lip, inward from the silver plate edge | 0.8 |
 | `seat_lip_w`, lip thickness | 1.8 |
-| Outside face of the lip, outside the silver plate edge | 1.6 |
+| Outside face of the lip, outside the silver plate edge | 1.0 |
 | `seat_lip_h`, lip height above the pocket floor | 4.2 |
 | `seat_fillet_r`, round-over on the top inside edge and cove at the foot | 0.6 |
-| Side play of the black body in the pocket | about 1.0 each side |
+| Side play of the black body in the pocket | about 0.4 each side |
 
-Consequence: the riser body is 1.6 mm larger than the silver plate all
-round, about 360.6 x 238.2 mm overall.
+The lip keeps its thickness, so the whole riser shrinks with the pocket:
+the body is 1.0 mm larger than the silver plate all round, about
+359.4 x 237.0 mm overall (the second version was 1.6 larger).
 
-The cove takes up 0.6 of the 1.0 mm play at floor level, so the body should
-centre itself on the coves. That is the seating effect the owner asked for.
+The cove at the foot of the lip is 0.6 wide, which is now more than the
+0.4 mm of play. So the black body rests on the coves all the way round and
+centres itself, with no room to slide. If its bottom edge is sharp it
+stands about 0.03 mm above the pocket floor. That is the seating effect
+the owner asked for, and ring 3 confirmed the fit. Should a larger print
+sit too tight, a smaller `seat_fillet_r` loosens it at the floor without
+moving the lip.
 
 See `docs/seat-section.png` and `interface_check.scad`.
 
@@ -131,7 +139,8 @@ See `docs/seat-section.png` and `interface_check.scad`.
 | Ring | Seat | Result |
 |---|---|---|
 | 1 | Lip 1.2 thick, 3.8 tall, inside face 1.2 inside the plate edge, outside face flush with it, 0.4 bevel | Printed on the P1P. Halves press together nicely at the dovetails (0.2 gap). Base drops in. Silver edges line up. No side play. Air gap under the plate "perhaps too big". |
-| 2 | Lip 1.8 thick, 4.2 tall, inside face 0.2 inside the plate edge, 0.6 fillets | Printed on the P1P on 2026-11-12. The owner on 2026-11-13: count it as passed; he will check it once more, and the seat gets amended then if needed. No written result yet. |
+| 2 | Lip 1.8 thick, 4.2 tall, inside face 0.2 inside the plate edge, 0.6 fillets | Printed on the P1P on 2026-11-12. Tested by the owner on 2026-11-13: nicer than ring 1, but a bit too loose. 1 mm more each side was too much. |
+| 3 | As ring 2, with the inside face 0.8 inside the plate edge: 0.6 mm tighter each side, 0.4 of play left | Printed and tested by the owner on 2026-11-13: confirmed. The final test of the seat is a whole top plate, after the test pieces. |
 
 The ring is the lip on a 10 mm band, 1.2 thick, with wider patches at the
 corners for the feet, split on the centre line and joined by a dovetail at
@@ -147,6 +156,10 @@ the front and rear. About 17 g per half, one half per plate.
 | 2026-11-12 | Test pieces before large prints. | Owner |
 | 2026-11-12 | **Split: option A, two mirrored halves** with the seam on the centre line. | Owner |
 | 2026-11-13 | Fit-test ring 2 counts as passed (to be checked once more). | Owner |
+| 2026-11-13 | Ring 2 tested: a bit too loose. The seat shrinks by 0.6 mm each side, in every model and every test piece (third version, section 4). | Owner |
+| 2026-11-13 | The lip stays 1.8 thick, so the riser's outside shrinks by the same 0.6 mm each side. | Design, section 4 |
+| 2026-11-13 | Print order: ring 3 and the test pieces, then a whole top plate as the final test. | Owner |
+| 2026-11-13 | Ring 3 confirmed. The seat stays as in section 4 (third version). | Owner, after the test |
 | 2026-11-13 | The wedge drawers swivel out by default and cannot be taken out in use. | Owner |
 | 2026-11-13 | The finger scoop is the drawer pull for now; handles are planned, with a Gridfinity drawer, several drawers per module and inner drawers (`../PLAN.md`, M4). | Owner |
 | 2026-11-13 | Top plate: 8 mm, two halves, seam on the centre line. | Owner, on the plan's recommendation |
@@ -268,8 +281,8 @@ Collected during the session. None of these is decided.
 
 ## 8. Open questions and risks
 
-- Fit-test ring 2 has no written result; the owner counts it as passed
-  and will check again.
+- The third seat (0.4 mm of play) is confirmed with ring 3 only. A whole
+  top plate is the final test.
 - Nothing in `riser.scad` has been printed. The fits that are new, each
   with a test piece: the stacking step, the drawer's slide and scoop, the
   drawer stop, the wedge drawer's hub and stops, the rear seam.
@@ -345,7 +358,7 @@ Suggestions for the website, not decisions:
 | `stl/module_60mm/`, `stl/plate_8mm/` | The ready-made set: a 60 mm module and an 8 mm top plate |
 | `stl/tests/` | The test pieces |
 | `web/` | Meshes and numbers for the designer website (`../PLAN.md`, M3) |
-| `stl/fit_test_left.stl`, `stl/fit_test_right.stl` | Fit-test ring 2 |
+| `stl/fit_test_left.stl`, `stl/fit_test_right.stl` | Fit-test ring 3 (also written by `riser_build.py stl`) |
 | `docs/outline-u3421we.png`, `.svg` | Dimensioned outline |
 | `docs/outline-u3421we-1to1-A4.pdf` | 1:1 paper template, two A4 pages |
 | `docs/seat-section.png`, `.svg` | Seat cross-section |
@@ -397,9 +410,9 @@ From the underside up, measured from the edge of the silver plate:
 
 | Zone | Height, mm | Outside face |
 |---|---|---|
-| Stepped-in zone | 0 to 4.6 | 0.5 inside, so 0.3 clear of the lip below; a 0.6 bevel on the bottom edge |
-| Flare | 4.6 to 6.7 | 45 degrees, from 0.5 inside to 1.6 outside |
-| Full outline | above 6.7 | 1.6 outside |
+| Stepped-in zone | 0 to 4.6 | 1.1 inside, so 0.3 clear of the lip below; a 0.6 bevel on the bottom edge |
+| Flare | 4.6 to 6.7 | 45 degrees, from 1.1 inside to 1.0 outside |
+| Full outline | above 6.7 | 1.0 outside |
 
 The body's walls, the drawer front, the outside walls of the wedge
 drawers and the top plate all follow it.
@@ -433,7 +446,7 @@ front corners together and stiffens the floor.
 
 - 230 wide, straight at the rear, its front panel following the hollow
   front edge. Walls 1.2, front 2.0, floor 1.0.
-- Inside: 227.6 wide, 201 deep on the centre line and 213 at the sides,
+- Inside: 227.6 wide, 200 deep on the centre line and 212 at the sides,
   and the module's height less 6.2 tall (53.8 in a 60 mm module).
 - `drawer_front`: `scoop`, a finger scoop 40 wide and 14 deep in the top
   edge of the panel, or `plain`.
@@ -447,7 +460,7 @@ front corners together and stiffens the floor.
 ### Wedge drawers
 
 - A pie-shaped drawer on an upright post, 7.4 across, that stands on the
-  floor near the narrow front end of the wedge, at X = 129.2, Y = 41.8.
+  floor near the narrow front end of the wedge, at X = 128.6, Y = 41.8.
   The drawer's hub, radius 7, just touches the outside face, so the
   drawer's outside wall runs on from the hub and is the module's side
   wall there. Its rear end is an arc of radius 161.6 about the post.
@@ -510,18 +523,18 @@ layers, 3 walls, 15 percent infill, one part per plate
 
 | Part | Size, mm | PLA | Print time |
 |---|---|---|---|
-| Body, left half | 187 x 238 x 64 | 145 g | 3 h 45 |
-| Body, right half | 180 x 238 x 64 | 145 g | 3 h 49 |
-| Main drawer, with scoop | 233 x 219 x 55 | 136 g | 3 h 03 |
-| Wedge drawer, each | 60 x 172 x 55 | 59 g | 1 h 39 |
-| **A 60 mm module** | 361 x 238 x 64 | **544 g** | **13 h 56** |
-| Top plate, each half | 187 x 238 x 12 | 121 g | 2 h 52 |
-| **An 8 mm top plate** | 361 x 238 x 12 | **241 g** | **5 h 43** |
-| A 30 mm module | | 350 g | 9 h 25 |
-| A 120 mm module | | 931 g | 22 h 51 |
+| Body, left half | 187 x 237 x 64 | 144 g | 3 h 44 |
+| Body, right half | 180 x 237 x 64 | 144 g | 3 h 48 |
+| Main drawer, with scoop | 233 x 217 x 55 | 135 g | 3 h 04 |
+| Wedge drawer, each | 59 x 171 x 55 | 58 g | 1 h 39 |
+| **A 60 mm module** | 359 x 237 x 64 | **540 g** | **13 h 54** |
+| Top plate, each half | 187 x 237 x 12 | 120 g | 2 h 50 |
+| **An 8 mm top plate** | 359 x 237 x 12 | **239 g** | **5 h 40** |
+| A 30 mm module | | 347 g | 9 h 23 |
+| A 120 mm module | | 925 g | 22 h 51 |
 
-A module gains about 6.5 g and 9 minutes for each millimetre of
-height. A 60 mm module with a top plate is 785 g, which is 7 to
+A module gains about 6.4 g and 9 minutes for each millimetre of
+height. A 60 mm module with a top plate is 779 g, which is 7 to
 16 EUR of PLA at the prices in `../docs/filaments-2026-11-12.md`. The
 two wedge drawers fit one plate, so a module is four plates and a top
 plate two.
@@ -548,7 +561,7 @@ Each checks one new fit. Print these before a whole part.
 
 | Pieces | PLA | What to look for |
 |---|---|---|
-| `test_step_left`, `test_step_right` | 42 g | The ring drops into fit-test ring 2 with a little play all round and sits flat. This is the stacking fit |
+| `test_step_left`, `test_step_right` | 42 g | The ring drops into fit-test ring 3 (not ring 2, which is 0.6 mm larger each side) with a little play all round and sits flat. This is the stacking fit |
 | `test_hub_body`, `test_hub_drawer` | 24 g | The drawer end drops over the post, turns freely from shut to the stop, and its outside wall is flush when shut |
 | `test_front_left`, `test_front_right`, `test_front_drawer` | 55 g | The two fronts press together at the dovetail; the drawer front slides between the bay walls on the runners; the panel is flush; the scoop is comfortable |
 | `test_stop_body`, `test_stop_drawer` | 13 g | The tongue bends without cracking, its bump drops into the groove and holds against a pull, the tab frees it |

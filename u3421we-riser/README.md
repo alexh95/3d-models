@@ -8,7 +8,9 @@ plate goes between the riser and the monitor.
 ![Two modules and a top plate under the monitor's base](docs/riser-stack.png)
 
 **Status, 2026-11-13:** designed and checked on the computer, not printed
-yet. Five small test pieces come first.
+yet. The seat is in its third version, which fit-test ring 3 confirmed.
+Five small test pieces come next, then a whole top plate as the final
+test of the seat.
 
 **[DESIGN.md](DESIGN.md) has the measurements, decisions, test history and
 next steps.** `../PLAN.md` has the phases, the designer website among them.
@@ -19,13 +21,13 @@ next steps.** `../PLAN.md` has the phases, the designer website among them.
 
 | Part | File in `stl/module_60mm/` | PLA | Print time |
 |---|---|---|---|
-| Body, two halves | `body_left.stl`, `body_right.stl` | 145 g each | 3 h 45 each |
-| Main drawer | `drawer_scoop.stl` (or `drawer_plain.stl`) | 136 g | 3 h 03 |
-| Wedge drawers | `wedge_swivel_l.stl`, `wedge_swivel_r.stl` | 59 g each | 1 h 40 each |
-| Top plate, two halves | `stl/plate_8mm/plate_left.stl`, `plate_right.stl` | 121 g each | 2 h 52 each |
+| Body, two halves | `body_left.stl`, `body_right.stl` | 144 g each | 3 h 46 each |
+| Main drawer | `drawer_scoop.stl` (or `drawer_plain.stl`) | 135 g | 3 h 04 |
+| Wedge drawers | `wedge_swivel_l.stl`, `wedge_swivel_r.stl` | 58 g each | 1 h 39 each |
+| Top plate, two halves | `stl/plate_8mm/plate_left.stl`, `plate_right.stl` | 120 g each | 2 h 50 each |
 
-A 60 mm module is 544 g and about 14 hours of printing; an 8 mm top plate
-is 241 g and under 6 hours. The numbers are Bambu Studio's, for PLA at
+A 60 mm module is 540 g and about 14 hours of printing; an 8 mm top plate
+is 239 g and under 6 hours. The numbers are Bambu Studio's, for PLA at
 0.20 mm with 3 walls and 15 percent infill.
 
 ![Drawers open](docs/riser-open.png)
@@ -111,4 +113,5 @@ of filament per half.
 | Ring | Seat | Result |
 |---|---|---|
 | 1 | Lip 1.2 thick, 3.8 tall, inside face 1.2 inside the plate edge, outside face flush with it | Halves join well, base drops in, edges line up. No side play, and the air gap under the plate looked too big. |
-| 2 | Lip 1.8 thick, 4.2 tall, inside face 0.2 inside the plate edge, outside face 1.6 outside it, 0.6 fillets on the inside top edge and foot | Printed on 2026-11-12. Counted as passed by the owner on 2026-11-13, to be checked once more. |
+| 2 | Lip 1.8 thick, 4.2 tall, inside face 0.2 inside the plate edge, outside face 1.6 outside it, 0.6 fillets on the inside top edge and foot | Printed on 2026-11-12. Tested on 2026-11-13: nicer, but a bit too loose. |
+| 3 | As ring 2, 0.6 mm smaller each side: inside face 0.8 inside the plate edge, outside face 1.0 outside it. 0.4 of play is left | Printed and tested on 2026-11-13: confirmed. These are the files in `stl/` now. |

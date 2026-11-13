@@ -33,7 +33,7 @@ The rates come from the job history FABRICATOR keeps (grams and seconds per
 finished job). What the printers mean for the design:
 
 - **Riser parts print on the P1P or the P1S only.** A half module is about
-  187 x 238 mm. The A1 mini can only take small add-ons (pulls, labels),
+  187 x 237 mm. The A1 mini can only take small add-ons (pulls, labels),
   and it carries a 0.2 mm nozzle at the moment.
 - **One colour per part.** cydonia's send check refuses a job with more
   than one filament, and the P1P has no AMS. The designer therefore assigns
@@ -52,6 +52,12 @@ FABRICATOR lists three fit-test jobs on the P1P today: 12:08
 14:51 (`fit_test_left (1).stl`, 16.5 g). Alex on 2026-11-13: treat ring 2
 as passed. He will check it once more, and the seat numbers in section 4 of
 `DESIGN.md` can still be amended after that.
+
+He tested it later the same day: nicer than ring 1, but a bit too loose.
+The seat is now 0.6 mm smaller each side in every model and every test
+piece (third version, 0.4 mm of play). He printed ring 3 the same day and
+confirmed the fit. Next he prints the test pieces, then a whole top plate
+as the final test.
 
 ### Tools on the dev PC
 
@@ -127,7 +133,7 @@ but not build.
 
 | # | Topic | Decision |
 |---|---|---|
-| 1 | Fit-test ring 2 | Counts as passed. Alex checks it again; the seat gets amended afterwards if needed |
+| 1 | Fit-test ring 2 | Counted as passed, then tested the same day: a bit too loose. The seat shrinks by 0.6 mm each side in every model and test piece (`DESIGN.md` section 4). Ring 3 confirmed the new seat on 2026-11-13. Still to print: the test pieces, then a whole top plate as the final test |
 | 2 | Default way to open the drawer | The finger scoop, for now. Handles that replace it are planned (M4.1) |
 | 3 | Default wedge insert | A drawer that swivels out and cannot be taken out in use (M1.4). `open` stays as the second choice |
 | 4 | Top plate | A slab 8 mm tall in two halves, same seat on top and same step underneath as a module |
@@ -150,7 +156,8 @@ with a `part` parameter, so the outline and seat numbers exist once in it.
 
 ### M0. Close the open measurements (Alex, minutes)
 
-- A second look at ring 2 (decision 1).
+- A second look at ring 2 (decision 1). Done on 2026-11-13: a bit too
+  loose, so the seat is 0.6 mm smaller each side.
 - The four rubber feet: where they are and how far they stand below the
   black body. Without a deck they hang into the module; with the top plate
   they stand on it.
@@ -216,8 +223,8 @@ with a `part` parameter, so the outline and seat numbers exist once in it.
 **Built on 2026-11-13** (`u3421we-riser/riser.scad`, `DESIGN.md` section
 12): steps 1 to 7 and 9 are done on the computer, step 8's five test
 pieces are exported and wait for the printer. Sliced, a 60 mm module is
-544 g and 13 h 56 over four plates, wedge drawers included; with an 8 mm
-top plate, 785 g and 7 to 16 EUR of PLA. Not built from step 5: the
+540 g and 13 h 54 over four plates, wedge drawers included; with an 8 mm
+top plate, 779 g and 7 to 16 EUR of PLA. Not built from step 5: the
 recesses for stick-on feet, and a clearance band for the monitor's own
 feet. The top plate under the monitor takes the place of the second.
 
@@ -232,8 +239,8 @@ feet. The top plate under the monitor takes the place of the second.
 - **Build.** `plate_h` 8 mm by default (7 is the least the step and its
   chamfer allow). Printed flat, right way up, as a solid slab with the
   slicer's infill; no bridging, no supports. Two halves with the flat
-  dovetail the fit-test ring already proved. Sliced: 241 g a pair,
-  5 h 43.
+  dovetail the fit-test ring already proved. Sliced: 239 g a pair,
+  5 h 40.
 - **Seam on the centre line.** An off-centre seam, staggered like
   brickwork, was the other idea. It would not hold a stack together any
   better: the step of the upper part sits *inside* the lip of the lower

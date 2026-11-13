@@ -30,6 +30,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 SCAD = ROOT / "riser.scad"
+RING_SCAD = ROOT / "interface_check.scad"
 SLICED = HERE / "sliced.json"
 PLA = 1.24          # g/cm3, the density the estimates are given for
 BED = 256           # mm
@@ -90,7 +91,7 @@ def define(value):
     return repr(value)
 
 
-def openscad(out, defs, extra=()):
+def openscad(out, defs, extra=(), scad=None):
     """Runs OpenSCAD. Returns the numbers the file echoes, or None if it drew nothing."""
     out = Path(out)
     if out.exists():
@@ -100,7 +101,7 @@ def openscad(out, defs, extra=()):
         cmd += ["--export-format", "binstl"]
     for key, value in defs.items():
         cmd += ["-D", "%s=%s" % (key, define(value))]
-    run = subprocess.run(cmd + [str(SCAD)], capture_output=True, text=True)
+    run = subprocess.run(cmd + [str(scad or SCAD)], capture_output=True, text=True)
     said = run.stdout + run.stderr    # echo goes to either, depending on the build
     for line in said.splitlines():
         if "WARNING" in line or "ERROR" in line:
@@ -338,6 +339,15 @@ def cmd_stl(args):
     target.mkdir(parents=True, exist_ok=True)
     for part, height in TESTS:
         mesh, _, path = export(part, {"module_h": height}, target)
+        lo, hi = mesh.box()
+        print("%-34s %6.1f x %6.1f x %5.1f mm  %6.1f cm3" % (
+            path.relative_to(ROOT), hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2], mesh.volume() / 1000))
+    # The seat ring comes from interface_check.scad. The step ring above is tested in it.
+    for side in ("left", "right"):
+        path = ROOT / "stl" / ("fit_test_%s.stl" % side)
+        if openscad(path, {"view": "fit test: %s half" % side}, scad=RING_SCAD) is None:
+            sys.exit("riser_build: the fit-test ring came out empty")
+        mesh = Mesh(path)
         lo, hi = mesh.box()
         print("%-34s %6.1f x %6.1f x %5.1f mm  %6.1f cm3" % (
             path.relative_to(ROOT), hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2], mesh.volume() / 1000))

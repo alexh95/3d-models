@@ -11,114 +11,114 @@
  "parts": {
   "body_left": {
    "30": {
-    "grams": 98.9,
-    "minutes": 162
+    "grams": 98.1,
+    "minutes": 161
    },
    "60": {
-    "grams": 145.4,
-    "minutes": 225
+    "grams": 144.3,
+    "minutes": 224
    },
    "120": {
-    "grams": 238.5,
-    "minutes": 349
+    "grams": 236.8,
+    "minutes": 348
    }
   },
   "body_right": {
    "30": {
-    "grams": 98.3,
-    "minutes": 164
+    "grams": 97.5,
+    "minutes": 163
    },
    "60": {
-    "grams": 144.9,
-    "minutes": 229
+    "grams": 143.6,
+    "minutes": 228
    },
    "120": {
-    "grams": 238.0,
-    "minutes": 359
+    "grams": 235.9,
+    "minutes": 357
    }
   },
   "drawer_scoop": {
    "30": {
-    "grams": 91.8,
+    "grams": 91.3,
     "minutes": 129
    },
    "60": {
-    "grams": 135.8,
-    "minutes": 183
+    "grams": 135.3,
+    "minutes": 184
    },
    "120": {
-    "grams": 223.9,
-    "minutes": 286
+    "grams": 223.2,
+    "minutes": 291
    }
   },
   "drawer_plain": {
    "30": {
-    "grams": 93.0,
-    "minutes": 130
+    "grams": 92.6,
+    "minutes": 129
    },
    "60": {
-    "grams": 137.1,
+    "grams": 136.6,
     "minutes": 185
    },
    "120": {
-    "grams": 225.2,
-    "minutes": 288
+    "grams": 224.4,
+    "minutes": 287
    }
   },
   "wedge_swivel_l": {
    "30": {
-    "grams": 30.5,
+    "grams": 30.2,
     "minutes": 55
    },
    "60": {
-    "grams": 58.7,
-    "minutes": 100
+    "grams": 58.3,
+    "minutes": 99
    },
    "120": {
-    "grams": 115.2,
-    "minutes": 189
+    "grams": 114.5,
+    "minutes": 188
    }
   },
   "wedge_swivel_r": {
    "30": {
-    "grams": 30.5,
+    "grams": 30.2,
     "minutes": 55
    },
    "60": {
-    "grams": 58.7,
+    "grams": 58.3,
     "minutes": 99
    },
    "120": {
-    "grams": 115.2,
-    "minutes": 188
+    "grams": 114.5,
+    "minutes": 187
    }
   },
   "plate_left": {
    "7": {
-    "grams": 113.5,
-    "minutes": 162
-   },
-   "8": {
-    "grams": 121.2,
-    "minutes": 172
-   },
-   "20": {
-    "grams": 209.8,
-    "minutes": 280
-   }
-  },
-  "plate_right": {
-   "7": {
-    "grams": 112.4,
+    "grams": 112.5,
     "minutes": 161
    },
    "8": {
-    "grams": 120.1,
+    "grams": 120.2,
     "minutes": 171
    },
    "20": {
     "grams": 207.9,
-    "minutes": 279
+    "minutes": 278
+   }
+  },
+  "plate_right": {
+   "7": {
+    "grams": 111.5,
+    "minutes": 160
+   },
+   "8": {
+    "grams": 119.1,
+    "minutes": 169
+   },
+   "20": {
+    "grams": 206.2,
+    "minutes": 277
    }
   }
  }

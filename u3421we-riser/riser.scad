@@ -59,8 +59,9 @@ floor_lightening = true;
 
 /* [Seat, from the fit tests] */
 // Where the inside face of the lip sits, measured inward from the edge of
-// the silver plate
-seat_lip_inner_inset = 0.2;
+// the silver plate. The monitor's black body is 1.2 inside that edge, so
+// 0.8 leaves 0.4 of play each side (0.2 was too loose, 1.2 had no play).
+seat_lip_inner_inset = 0.8;
 // Thickness of the lip
 seat_lip_w = 1.8;
 // Height of the lip above the pocket floor
