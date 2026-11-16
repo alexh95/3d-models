@@ -1,10 +1,14 @@
 # Plan: the riser model, the top plate and the designer site
 
 Written 2026-11-12, reviewed by Alex on 2026-11-13. Section 2 records his
-decisions, and work on tracks M and W has started. `u3421we-riser/DESIGN.md`
-stays the record of measurements, decisions and test results; this file
-says what gets built next, in what order, and what can run at the same
-time.
+decisions. `u3421we-riser/DESIGN.md` stays the record of measurements,
+decisions and test results; this file says what gets built next, in what
+order, and what can run at the same time.
+
+**State on 2026-11-16:** the model is built and its five test pieces
+pass; a whole top plate is still to print (section 3). The site is live
+at `https://riser.alexh95.com` (section 4). Nothing of track C is
+started.
 
 Three tracks:
 
@@ -56,8 +60,8 @@ as passed. He will check it once more, and the seat numbers in section 4 of
 He tested it later the same day: nicer than ring 1, but a bit too loose.
 The seat is now 0.6 mm smaller each side in every model and every test
 piece (third version, 0.4 mm of play). He printed ring 3 the same day and
-confirmed the fit. Next he prints the test pieces, then a whole top plate
-as the final test.
+confirmed the fit. The test pieces followed and all five pass
+(2026-11-16). A whole top plate is the final test, still to print.
 
 ### Tools on the dev PC
 
@@ -125,11 +129,12 @@ stays the only source of the geometry.
 on the older branch `claude/confident-dijkstra-dvvz2y`, which `main`
 starts from.
 
-## 2. Decisions (Alex, 2026-11-13)
+## 2. Decisions (Alex, 2026-11-13, with later changes)
 
 Alex went with the recommendations, with three changes: no email yet, a
 swivelling wedge drawer as the default, and four drawer features to plan
-but not build.
+but not build. On 2026-11-16 he changed the site's address (decision 5)
+and added decisions 11 and 12.
 
 | # | Topic | Decision |
 |---|---|---|
@@ -137,12 +142,14 @@ but not build.
 | 2 | Default way to open the drawer | The finger scoop, for now. Handles that replace it are planned (M4.1) |
 | 3 | Default wedge insert | A drawer that swivels out and cannot be taken out in use (M1.4). `open` stays as the second choice |
 | 4 | Top plate | A slab 8 mm tall in two halves, same seat on top and same step underneath as a module. Sliced lighter than the module: 10 percent infill and 4 top layers, 200 g a pair instead of 239 g (`DESIGN.md` section 12) |
-| 5 | Site name and reach | **Desk Stack** at `deskstack.alexh95.com`, public, with `launchpad.alexh95.com` leading to the same site (W6). Admin pages reachable from the LAN and WireGuard only |
+| 5 | Site name and reach | **Desk Stack** at `riser.alexh95.com`, public, its only address (changed 2026-11-16; before that `deskstack.alexh95.com`, with `launchpad.alexh95.com` leading to it, and both names are dropped). Admin pages reachable from the LAN and WireGuard only |
 | 6 | Requests and currency | Anyone with the link may fill in the form; costs in lei, catalogue kept in EUR |
 | 7 | Email | **Deferred.** The form and its pages get built. Submitting shows a "work in progress" notice; nothing is sent and nothing is stored (W4) |
 | 8 | Where the site's code lives | Its own repository made from the starter template, `C:\Projects\cc\riser-designer` |
 | 9 | `main` branch for `3d-models` | Yes, as the default branch |
 | 10 | cydonia links | C1 and C3; C2 once requests arrive (section 5) |
+| 11 | Way in to the admin pages (2026-11-16) | Straight to the site's port on apollo, from the LAN. The public name does not reach them from home (W6) |
+| 12 | Favicon (2026-11-16) | The riser as 8-bit isometric pixel art |
 
 Planned, not to be built yet (section 3, M4): handles in place of the
 finger scoop, a Gridfinity drawer with office bins, several drawers in one
@@ -452,6 +459,21 @@ A new repository from the starter template. The designer page itself is
 browser code (the design lives in local storage); htmx serves the request
 form, the order page and the admin pages.
 
+**State on 2026-11-16:** the site is live at `https://riser.alexh95.com`,
+on model bundle `2026-11-13.06434ea1`. The steps below are kept as they
+were planned; this table says where each one stands.
+
+| Step | State |
+|---|---|
+| W0. Skeleton and contract | Done, 2026-11-13 |
+| W1. The 3D viewer | Done, 2026-11-13 |
+| W2. The editor | Done, 2026-11-13 |
+| W3. Filaments and the estimate | Done, 2026-11-13. Open: a look at the prices; Bambu's low end is a sale that ends on 2026-12-01 |
+| W4. Requests and the email | The form, the request's page and the admin side are done. The form's switch stays on `wip`. The email is deferred (decision 7) |
+| W5. Admin | Done, 2026-11-13 |
+| W6. Hosting on apollo | Done, 2026-11-16 |
+| W7. Worth adding | The height helper and the picture button came with the designer. Open in the site's `TODO.md`: "Print it yourself", live status on a request's page, exact STLs made on the server |
+
 ### W0. Skeleton and contract
 
 - Create the repository and run `tools/init` with accounts (admin and
@@ -587,22 +609,31 @@ its place.
 - Filament prices and stock flags; estimator settings.
 - A new admin permission; all admin routes `Lan_Only` and behind TOTP.
 
-### W6. Hosting on apollo
+### W6. Hosting on apollo (done 2026-11-16)
 
 - Compose service, data volume, backups, health check, release image.
-- **Two addresses, one site.** Alex likes both names and chose Desk Stack
-  as the main one (2026-11-13). The site is called Desk Stack and lives
-  at `deskstack.alexh95.com`; `launchpad.alexh95.com` redirects there at
-  the proxy. One address has
-  to be the real one: designs are kept in the browser, per address, so a
-  design saved under one name would be missing under the other. Share
-  links and request links always carry the main address. Swapping which
-  one is the main one is a setting, as long as it happens before people
-  start saving designs.
-- **Alex's steps:** two DNS records, a proxy host and certificate for the
-  main address, a redirect for the other, the data folder, the admin and
-  mail secrets.
-- Promotion by script, run when Alex asks.
+- **One address.** The site is called Desk Stack and lives at
+  `riser.alexh95.com`, Alex's choice on 2026-11-16. The two names chosen
+  on 2026-11-13, `deskstack.alexh95.com` and `launchpad.alexh95.com`, are
+  dropped: neither serves nor redirects. Designs are kept in the browser,
+  per address, so a site has one real address, and share links and
+  request links always carry it. The address is one setting in the site's
+  code (`SITE` in `app/cmd/app/brand.odin`).
+- **DNS and certificate.** No records were needed, because `alexh95.com`
+  has a wildcard record. Alex made the proxy host himself and reused the
+  wildcard certificate.
+- **The way in to the admin pages** (decision 11). Sign-in and the admin
+  pages are LAN-only in the app. From home the public name does not reach
+  them: the router makes a visitor on the LAN look like one from outside,
+  so they answer "not found". Alex chose the direct way: admin work goes
+  straight to the site's port on apollo, from the LAN.
+- **Done by Alex:** the proxy host, the admin password and the two-step
+  key (he typed both himself), two-step sign-in for the admin, and a look
+  from outside. No mail secrets yet: the email is deferred.
+- The first deploy ran on 2026-11-16 by the site's
+  `deploy/apollo/deploy.sh`. A later deploy, a new model bundle included,
+  is run when Alex asks. The steps as done are in the site's
+  `docs/DEPLOY-apollo.md`.
 
 ### W7. Worth adding
 
@@ -636,21 +667,24 @@ to cydonia from apollo, and any button on the site that starts a print.
 
 | Session | Repository | Can start | Needs from Alex |
 |---|---|---|---|
-| A. Model: top plate, then module, then export (M2, M1, M3) | `3d-models` | started 2026-11-13 | fit feedback, test prints |
-| B. Site: skeleton, viewer, editor, catalogue, estimate, form, admin (W0 to W5) | `riser-designer` | started 2026-11-13 | a look at the prices |
+| A. Model: top plate, then module, then export (M2, M1, M3) | `3d-models` | built 2026-11-13; test pieces pass 2026-11-16 | the top plate print, then a whole module |
+| B. Site: skeleton, viewer, editor, catalogue, estimate, form, admin (W0 to W5), hosting (W6) | `riser-designer` | done; live since 2026-11-16 | a look at the prices |
 | D. Mail: SMTP client, relay, fake server (rest of W4) | `riser-designer` | deferred by Alex | provider choice |
-| E. cydonia links (C1, C3) | `cydonia` | after W6 | nothing |
+| E. cydonia links (C1, C3) | `cydonia` | can start: W6 is done | a word to start |
 
-A and B share no files, so they run together. B uses a placeholder
-bundle from the block model until M3 delivers the real one.
+A and B share no files, so they ran together. B used a placeholder
+bundle from the block model until M3 delivered the real one.
 
 Milestones:
 
 1. **Something to show:** the site live with viewer, editor and estimate
-   (W0 to W3, W6).
-2. **Taking requests:** form, email, admin (W4, W5).
+   (W0 to W3, W6). Reached on 2026-11-16.
+2. **Taking requests:** form, email, admin (W4, W5). The form and the
+   admin side are built; the form stays on "work in progress" and the
+   email is deferred.
 3. **Printing a request:** the model's ready-made set and the path from a
-   request to plates (M1 to M3, C3).
+   request to plates (M1 to M3, C3). The ready-made set exists; no whole
+   part is printed and C3 is not started.
 
 ## 7. Risks
 
