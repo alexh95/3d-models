@@ -7,10 +7,10 @@ plate goes between the riser and the monitor.
 
 ![Two modules and a top plate under the monitor's base](docs/riser-stack.png)
 
-**Status, 2026-11-13:** designed and checked on the computer, not printed
-yet. The seat is in its third version, which fit-test ring 3 confirmed.
-Five small test pieces come next, then a whole top plate as the final
-test of the seat.
+**Status, 2026-11-16:** designed and checked on the computer; no whole
+part printed yet. The seat is in its third version, which fit-test ring 3
+confirmed, and the five small test pieces pass. A whole top plate comes
+next, as the final test of the seat.
 
 **[DESIGN.md](DESIGN.md) has the measurements, decisions, test history and
 next steps.** `../PLAN.md` has the phases, the designer website among them.
@@ -52,7 +52,8 @@ is 200 g and under 5 hours. The numbers are Bambu Studio's, for PLA at
    dovetails.
 2. Drop each wedge drawer over its post and swing it shut.
 3. Slide the main drawer in until both tongues click into their grooves.
-   To take it out again, pull the two finger tabs at the back inward.
+   To take it out again, pull the two finger tabs inward: the small
+   blocks on the inside of the side walls, near the back.
 4. Press the two halves of the top plate together and set the plate on
    the module, then the monitor on the plate. Modules and plates stack in
    any order.

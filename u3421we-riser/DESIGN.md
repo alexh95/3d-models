@@ -7,9 +7,11 @@ from the repository alone. Last updated 2026-11-13.
 has been test-printed three times. The riser is designed in `riser.scad` on
 option A: two body halves, a main drawer, two swivelling wedge drawers and
 a stackable top plate, with the module's height as a parameter (section
-12). Nothing of it has been printed yet. The seat is in its third version
-(section 4), which fit-test ring 3 confirmed. Five small test pieces come
-next, then a whole top plate as the final test of the seat.
+12). No whole part has been printed yet. The seat is in its third version
+(section 4), which fit-test ring 3 confirmed. The five small test pieces
+are printed and pass: the stacking step, the wedge hub, the drawer front,
+the drawer stop and the rear seam (section 12). A whole top plate comes
+next, as the final test of the seat.
 
 ## 1. What is being built
 
@@ -161,6 +163,7 @@ the front and rear. About 17 g per half, one half per plate.
 | 2026-11-13 | Print order: ring 3 and the test pieces, then a whole top plate as the final test. | Owner |
 | 2026-11-13 | Ring 3 confirmed. The seat stays as in section 4 (third version). | Owner, after the test |
 | 2026-11-13 | The top plate is sliced with 10 percent infill and 4 top layers, 3 walls: 200 g a pair instead of 239 g (section 12). | Owner, on the sliced comparison |
+| 2026-11-16 | The five test pieces pass. The drawer stop holds a normal pull, gives way to a yank and is freed by its tab; it stays as it is. | Owner, after the tests |
 | 2026-11-13 | The wedge drawers swivel out by default and cannot be taken out in use. | Owner |
 | 2026-11-13 | The finger scoop is the drawer pull for now; handles are planned, with a Gridfinity drawer, several drawers per module and inner drawers (`../PLAN.md`, M4). | Owner |
 | 2026-11-13 | Top plate: 8 mm, two halves, seam on the centre line. | Owner, on the plan's recommendation |
@@ -286,9 +289,13 @@ Collected during the session. None of these is decided.
   top plate is the final test.
 - The top plate's lighter settings (10 percent infill, 4 top layers) have
   not been printed. The pocket floor's surface is the thing to look at.
-- Nothing in `riser.scad` has been printed. The fits that are new, each
-  with a test piece: the stacking step, the drawer's slide and scoop, the
-  drawer stop, the wedge drawer's hub and stops, the rear seam.
+- No whole part of `riser.scad` has been printed. Of the new fits, the
+  stacking step, the drawer's slide and scoop, the wedge drawer's hub and
+  stops and the rear seam passed as test pieces on 2026-11-16.
+- The drawer stop holds a normal pull on the test piece, gives way only
+  to a yank, and the tab frees it, so the catch stays as it is. The test
+  piece has one tongue; a whole drawer has two, and reaching both tabs at
+  once has not been tried (section 12).
 - `riser.scad` has not been opened in OpenSCAD 2021.01 by the owner yet.
 - Without a top plate the monitor's rubber feet hang over the drawers,
   0.6 mm above them. If the feet stand lower than the black body, they
@@ -402,8 +409,9 @@ Notes:
 
 ## 12. The riser as designed in `riser.scad` (2026-11-13)
 
-Built on option A. Nothing has been printed yet; the test pieces at the
-end of this section come first. Pictures: `docs/riser-exploded.png`,
+Built on option A. The test pieces at the end of this section are printed
+and all five fits pass; no whole part has been printed yet.
+Pictures: `docs/riser-exploded.png`,
 `docs/riser-open.png`, `docs/riser-stack.png`, `docs/riser-hub.png`,
 `docs/riser-print-plates.png`.
 
@@ -595,13 +603,20 @@ OpenSCAD 2021.01 (`tools/openscad-2021/Dockerfile`).
 
 Each checks one new fit. Print these before a whole part.
 
-| Pieces | PLA | What to look for |
-|---|---|---|
-| `test_step_left`, `test_step_right` | 42 g | The ring drops into fit-test ring 3 (not ring 2, which is 0.6 mm larger each side) with a little play all round and sits flat. This is the stacking fit |
-| `test_hub_body`, `test_hub_drawer` | 24 g | The drawer end drops over the post, turns freely from shut to the stop, and its outside wall is flush when shut |
-| `test_front_left`, `test_front_right`, `test_front_drawer` | 55 g | The two fronts press together at the dovetail; the drawer front slides between the bay walls on the runners; the panel is flush; the scoop is comfortable |
-| `test_stop_body`, `test_stop_drawer` | 13 g | The tongue bends without cracking, its bump drops into the groove and holds against a pull, the tab frees it |
-| `test_seam_left`, `test_seam_right` | 19 g | The right block slides down over the left one's dovetail and sits snug |
+| Pieces | PLA | What to look for | Result, 2026-11-16 |
+|---|---|---|---|
+| `test_step_left`, `test_step_right` | 42 g | The ring drops into fit-test ring 3 (not ring 2, which is 0.6 mm larger each side) with a little play all round and sits flat. This is the stacking fit | Pass |
+| `test_hub_body`, `test_hub_drawer` | 24 g | The drawer end drops over the post, turns freely from shut to the stop, and its outside wall is flush when shut | Pass |
+| `test_front_left`, `test_front_right`, `test_front_drawer` | 55 g | The two fronts press together at the dovetail; the drawer front slides between the bay walls on the runners; the panel is flush; the scoop is comfortable | Pass |
+| `test_stop_body`, `test_stop_drawer` | 13 g | The tongue bends without cracking and its bump drops into the groove. Pulled toward the front, the drawer piece stops where the groove ends, 20 mm from the front. Pulling the finger tab (the small block on the inside of the tongue, at its top) toward the middle of the drawer frees it | Pass. The pieces slide, the bump goes in with a push, and the stop holds a normal pull; only a yank gets it past. Pulling the tab frees the piece. The catch stays as it is |
+| `test_seam_left`, `test_seam_right` | 19 g | The right block slides down over the left one's dovetail and sits snug | Pass |
 
-They are cut from 30 mm modules (the seam from a 40 mm one).
+They are cut from 30 mm modules (the seam from a 40 mm one). All were
+printed by the owner, who reported the results on 2026-11-16.
+
+The stop test holds less than the real drawer does. It has one tongue and
+is held against the wall by hand, so the piece can move away from the
+wall and let the bump out. A whole drawer sits between two bay walls with
+0.6 mm of play each side, so one of its two bumps is always at least
+0.8 mm deep in its groove.
 

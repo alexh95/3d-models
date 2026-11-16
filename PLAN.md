@@ -133,7 +133,7 @@ but not build.
 
 | # | Topic | Decision |
 |---|---|---|
-| 1 | Fit-test ring 2 | Counted as passed, then tested the same day: a bit too loose. The seat shrinks by 0.6 mm each side in every model and test piece (`DESIGN.md` section 4). Ring 3 confirmed the new seat on 2026-11-13. Still to print: the test pieces, then a whole top plate as the final test |
+| 1 | Fit-test ring 2 | Counted as passed, then tested the same day: a bit too loose. The seat shrinks by 0.6 mm each side in every model and test piece (`DESIGN.md` section 4). Ring 3 confirmed the new seat on 2026-11-13. The test pieces are printed and all five pass (2026-11-16). Still to print: a whole top plate as the final test |
 | 2 | Default way to open the drawer | The finger scoop, for now. Handles that replace it are planned (M4.1) |
 | 3 | Default wedge insert | A drawer that swivels out and cannot be taken out in use (M1.4). `open` stays as the second choice |
 | 4 | Top plate | A slab 8 mm tall in two halves, same seat on top and same step underneath as a module. Sliced lighter than the module: 10 percent infill and 4 top layers, 200 g a pair instead of 239 g (`DESIGN.md` section 12) |
@@ -221,9 +221,10 @@ with a `part` parameter, so the outline and seat numbers exist once in it.
    the P1P through `slice-plate`, real weights and times in `DESIGN.md`.
 
 **Built on 2026-11-13** (`u3421we-riser/riser.scad`, `DESIGN.md` section
-12): steps 1 to 7 and 9 are done on the computer, step 8's five test
-pieces are exported and wait for the printer. Sliced, a 60 mm module is
-540 g and 13 h 54 over four plates, wedge drawers included; with an 8 mm
+12): steps 1 to 7 and 9 are done on the computer. Step 8's five test
+pieces are printed and pass (2026-11-16, `DESIGN.md` section 12; the
+drawer stop holds a normal pull, is freed by its tab and stays as it
+is). Sliced, a 60 mm module is 540 g and 13 h 54 over four plates, wedge drawers included; with an 8 mm
 top plate, 740 g and 7 to 15 EUR of PLA. Not built from step 5: the
 recesses for stick-on feet, and a clearance band for the monitor's own
 feet. The top plate under the monitor takes the place of the second.
