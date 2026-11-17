@@ -297,11 +297,13 @@ Collected during the session. None of these is decided.
   to a yank, and the tab frees it, so the catch stays as it is. The test
   piece has one tongue; a whole drawer has two, and reaching both tabs at
   once has not been tried (section 12).
-- The website's code reads `h_min` and `mesh_print` since 2026-11-17
-  (bundle `2026-11-17.f3ca0565`), but the live site did not run that
-  version yet when this was written. Until it does, its STL download is
-  made from the light meshes and a scoop drawer under 39 mm comes out
-  folded. No part from the site's download has been sliced or printed.
+- The website reads `h_min` and `mesh_print` since 2026-11-17 (bundle
+  `2026-11-17.f3ca0565`, live that day). An archive downloaded from the
+  live site (a 39 mm module with the scoop, a 73 mm module with the plain
+  front, a 12 mm plate) was held to this file's own exports at those
+  heights: all twelve parts are the same shape, and a 35 mm module with
+  the scoop is refused. No part from the site's download has been sliced
+  or printed.
 - `riser.scad` has not been opened in OpenSCAD 2021.01 by the owner yet.
 - Without a top plate the monitor's rubber feet hang over the drawers,
   0.6 mm above them. If the feet stand lower than the black body, they
