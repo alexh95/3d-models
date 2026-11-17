@@ -1,14 +1,14 @@
 {
  "bundle": 1,
  "profile": "dell-u3421we",
- "revision": "2026-11-13.06434ea1",
+ "revision": "2026-11-17.f3ca0565",
  "density_ref": 1.24,
  "kinds": {
   "module": {
    "h": {
     "min": 30,
     "max": 200,
-    "step": 5,
+    "step": 1,
     "default": 60,
     "ref": 60
    },
@@ -61,7 +61,9 @@
    "kind": "module",
    "slot": "body",
    "when": {},
+   "h_min": 30,
    "mesh": "meshes/body_left.stl",
+   "mesh_print": "meshes/print/body_left.stl",
    "stretch": [
     {
      "z0": 22.9,
@@ -98,7 +100,9 @@
    "kind": "module",
    "slot": "body",
    "when": {},
+   "h_min": 30,
    "mesh": "meshes/body_right.stl",
+   "mesh_print": "meshes/print/body_right.stl",
    "stretch": [
     {
      "z0": 22.9,
@@ -137,7 +141,9 @@
    "when": {
     "front": "scoop"
    },
+   "h_min": 39,
    "mesh": "meshes/drawer_scoop.stl",
+   "mesh_print": "meshes/print/drawer_scoop.stl",
    "stretch": [
     {
      "z0": 23.6,
@@ -184,7 +190,9 @@
    "when": {
     "front": "plain"
    },
+   "h_min": 30,
    "mesh": "meshes/drawer_plain.stl",
+   "mesh_print": "meshes/print/drawer_plain.stl",
    "stretch": [
     {
      "z0": 23.6,
@@ -231,7 +239,9 @@
    "when": {
     "wedge_l": "swivel"
    },
+   "h_min": 30,
    "mesh": "meshes/wedge_swivel_l.stl",
+   "mesh_print": "meshes/print/wedge_swivel_l.stl",
    "stretch": [
     {
      "z0": 6.7,
@@ -277,7 +287,9 @@
    "when": {
     "wedge_r": "swivel"
    },
+   "h_min": 30,
    "mesh": "meshes/wedge_swivel_r.stl",
+   "mesh_print": "meshes/print/wedge_swivel_r.stl",
    "stretch": [
     {
      "z0": 6.7,
@@ -321,7 +333,9 @@
    "kind": "plate",
    "slot": "body",
    "when": {},
+   "h_min": 7,
    "mesh": "meshes/plate_left.stl",
+   "mesh_print": "meshes/print/plate_left.stl",
    "stretch": [
     {
      "z0": 6.7,
@@ -358,7 +372,9 @@
    "kind": "plate",
    "slot": "body",
    "when": {},
+   "h_min": 7,
    "mesh": "meshes/plate_right.stl",
+   "mesh_print": "meshes/print/plate_right.stl",
    "stretch": [
     {
      "z0": 6.7,

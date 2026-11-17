@@ -272,13 +272,18 @@ This is the contract between the model and the site, bundle version 1:
 - `meshes/<part id>.stl`: one binary STL per part and variant, in mm, in
   the model's own coordinates (X right, +Y to the wall, Z up, Z = 0 at the
   underside of the module or plate), exported at the reference height.
+  This is the light mesh, for drawing: 0.7 mm steps and fewer points on
+  the curves.
+- `meshes/print/<part id>.stl` (since 2026-11-17): the same part at the
+  model's own quality, 0.2 mm steps, byte for byte the file in `stl/`.
+  Any file a person prints is made from this one.
 - `bundle.json`:
 
   ```json
   {"bundle": 1, "profile": "dell-u3421we", "revision": "2026-11-13.1",
    "density_ref": 1.24,
    "kinds": {
-     "module": {"h": {"min": 30, "max": 200, "step": 5, "default": 60, "ref": 60},
+     "module": {"h": {"min": 30, "max": 200, "step": 1, "default": 60, "ref": 60},
        "options": {"front": {"values": ["scoop", "plain"], "default": "scoop"},
                    "wedge_l": {"values": ["swivel", "open"], "default": "swivel"},
                    "wedge_r": {"values": ["swivel", "open"], "default": "swivel"}},
@@ -287,7 +292,8 @@ This is the contract between the model and the site, bundle version 1:
        "options": {}, "color_slots": ["body"]}},
    "parts": [
      {"id": "body_left", "kind": "module", "slot": "body", "when": {},
-      "mesh": "meshes/body_left.stl",
+      "h_min": 30,
+      "mesh": "meshes/body_left.stl", "mesh_print": "meshes/print/body_left.stl",
       "stretch": [{"z0": 7.0, "z1": 53.0, "share": 1}],
       "motion": null, "bed": [189, 239],
       "est": {"h": [30, 60, 120], "grams": [98, 131, 197], "minutes": [190, 250, 370], "source": "sliced"}},
@@ -308,7 +314,18 @@ This is the contract between the model and the site, bundle version 1:
 - **`stretch`.** For a height `h`, every vertex at or above `z1` moves up
   by `share * (h - ref)`; vertices at or below `z0` stay. No vertex lies
   between `z0` and `z1`. Version 1 has one band per part; the list form is
-  there so a part with a runner halfway up (M4.3) can have two.
+  there so a part with a runner halfway up (M4.3) can have two. The rule
+  is the same for `mesh` and `mesh_print`.
+- **`h_min`** (since 2026-11-17) is the lowest height the part's mesh can
+  be moved to: below it the band is used up and the mesh passes through
+  itself. An item's lowest height is the highest `h_min` among the parts
+  its options choose, and never below the kind's `min`. Today only the
+  scoop drawer starts higher, at 39 mm; the plain front reaches 30 mm. A
+  bundle without the field means the kind's `min`.
+- **`step`** is 1 mm for a module since 2026-11-17: any whole height is
+  exact, because a height is the reference mesh with its top moved.
+- **`revision`** is a date and a hash of everything in the bundle, the
+  fields and every mesh. The site stores it with each request.
 - **`motion`.** `slide`: move by `travel` mm along `dir` when fully open.
   `swivel`: turn by `deg` degrees about the upright axis through `pivot`,
   counter-clockwise seen from above when positive.

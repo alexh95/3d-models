@@ -31,5 +31,7 @@ repository gives it the meshes and numbers in `u3421we-riser/web/`.
   fit the bed, never overlap, need no supports, and stay the same shape
   at every height apart from a straight middle section. The website
   depends on that last rule, so tie every new feature to the bottom or to
-  the top of the module. Then `stl`, `slice` and `web` refresh the files
-  made from it.
+  the top of the module. A feature that reaches far from its end shortens
+  the straight section and raises the lowest height the website can offer
+  that part at (`h_min` in the bundle; the check prints it). Then `stl`,
+  `slice` and `web` refresh the files made from it.

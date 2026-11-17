@@ -164,6 +164,7 @@ the front and rear. About 17 g per half, one half per plate.
 | 2026-11-13 | Ring 3 confirmed. The seat stays as in section 4 (third version). | Owner, after the test |
 | 2026-11-13 | The top plate is sliced with 10 percent infill and 4 top layers, 3 walls: 200 g a pair instead of 239 g (section 12). | Owner, on the sliced comparison |
 | 2026-11-16 | The five test pieces pass. The drawer stop holds a normal pull, gives way to a yank and is freed by its tab; it stays as it is. | Owner, after the tests |
+| 2026-11-17 | For the website: the scoop drawer starts at 39 mm (the plain front at 30 mm), the STL download is made from print-quality meshes, and heights go in 1 mm steps (section 12). | Owner, on what the site found |
 | 2026-11-13 | The wedge drawers swivel out by default and cannot be taken out in use. | Owner |
 | 2026-11-13 | The finger scoop is the drawer pull for now; handles are planned, with a Gridfinity drawer, several drawers per module and inner drawers (`../PLAN.md`, M4). | Owner |
 | 2026-11-13 | Top plate: 8 mm, two halves, seam on the centre line. | Owner, on the plan's recommendation |
@@ -296,6 +297,10 @@ Collected during the session. None of these is decided.
   to a yank, and the tab frees it, so the catch stays as it is. The test
   piece has one tongue; a whole drawer has two, and reaching both tabs at
   once has not been tried (section 12).
+- The website does not read `h_min` and `mesh_print` yet (bundle
+  `2026-11-17.f3ca0565`). Until it does, its STL download is made from the
+  light meshes and a scoop drawer under 39 mm comes out folded. No part
+  from the site's download has been sliced or printed.
 - `riser.scad` has not been opened in OpenSCAD 2021.01 by the owner yet.
 - Without a top plate the monitor's rubber feet hang over the drawers,
   0.6 mm above them. If the feet stand lower than the black body, they
@@ -524,7 +529,24 @@ Every feature is tied to the bottom or to the top of the module, and
 each sloped feature reads its height on its own steps (`_q`). So a
 module of another height is the same mesh with everything above the
 straight middle section moved up or down. The website relies on that,
-and `riser_build.py check` proves it at 30, 45, 90, 120 and 200 mm.
+and `riser_build.py check` proves it at 45, 90, 120 and 200 mm and at
+each part's lowest height.
+
+**The lowest height of a part.** Moving the top down uses up the straight
+section. Once it is gone, what hangs from the top lands among what stands
+on the bottom, and the moved mesh passes through itself. Every part
+reaches 30 mm except the drawer with the finger scoop. Its scoop reaches
+14.6 mm down from the module's top, and the slot round its stop tongue
+23.6 mm up from the bottom, so its straight section is 21.8 mm long in a
+60 mm module and its mesh is good from 39 mm. `riser.scad` itself still
+draws a scoop drawer at any height from 30 mm, because the scoop is at
+the front and the tongue at the back. Only the moved mesh cannot. So the
+website offers the scoop from 39 mm and the plain front from 30 mm.
+
+The website found this on 2026-11-17, in its 3D view and its STL
+download. The check had missed it: it let a moved mesh pass when its
+volume matched, and a mesh folded through itself has the right volume.
+It now compares the surfaces and starts at each part's lowest height.
 
 ### Numbers
 
@@ -594,10 +616,36 @@ The modules keep 3 walls, 15 percent and 5 top layers.
   another module, at 30 and 60 mm;
 - nothing needs support. What remains are two short bridges: 10 mm over
   the tip of each tongue, and a 2.4 mm dimple under each wedge drawer;
-- the straight-middle rule above.
+- the straight-middle rule above, on the website's mesh and on the print
+  mesh, from each part's lowest height up;
+- a part that starts above 30 mm has another choice that reaches 30 mm
+  (the plain front, for the scoop).
 
 Also checked by hand on 2026-11-13: the file opens and previews in a real
 OpenSCAD 2021.01 (`tools/openscad-2021/Dockerfile`).
+
+### What the website gets
+
+`python tools/riser_build.py web` writes `web/` (the contract is in
+`../PLAN.md`, M3). Since 2026-11-17 it holds two meshes of every part:
+
+| Mesh | Steps | Size, all parts | For |
+|---|---|---|---|
+| `web/meshes/<part>.stl` | 0.7 mm, fewer points on the curves | 2.7 MB | drawing the 3D view |
+| `web/meshes/print/<part>.stl` | 0.2 mm, the model's own | 9.2 MB | the files people print |
+
+The print meshes are byte for byte the files in `stl/module_60mm/` and
+`stl/plate_8mm/`, which the fit tests were printed from. Both meshes of
+a part have the same straight section, so one rule moves either.
+
+The site's STL download was first built from the light meshes. Every
+round came out in 0.7 mm steps, the seat's 0.6 mm cove among them, so a
+downloaded part was not the tested shape. The download has to use the
+print meshes.
+
+Each part also carries its lowest height (`h_min`), and a module's height
+goes in 1 mm steps. The bundle's revision now covers everything the site
+receives, the fields and every mesh.
 
 ### Test pieces, in `stl/tests/`
 

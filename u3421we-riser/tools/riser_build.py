@@ -16,6 +16,7 @@ import argparse
 import datetime
 import hashlib
 import json
+import math
 import os
 import re
 import shutil
@@ -41,7 +42,8 @@ REF_H = 60
 REF_PLATE_H = 8
 HEIGHTS = [30, 60, 120]
 PLATE_HEIGHTS = [7, 8, 20]
-# Coarser meshes for the website: fewer points on the outline, taller steps
+# Coarser meshes for the website to draw: fewer points on the outline, taller steps. Nothing
+# to print from: the bundle carries a second mesh of each part at the model's own quality.
 WEB = {"_arc_steps": 24, "_fn": 20, "_dz": 0.7}
 
 # bundle id, part in riser.scad, parameters, colour slot, the options it belongs to
@@ -190,11 +192,12 @@ def overhang_patches(tmp, part, defs):
     return sorted(seen)
 
 
-def stretch_band(tmp, part, defs, key, ref):
+def stretch_band(tmp, part, defs, key, ref, fine=False):
     """Where a part is straight: (reference mesh, z0, z1). Found by exporting it 10 mm taller
-    and seeing which levels moved."""
-    mesh, nums, _ = export(part, {**defs, **WEB, key: ref}, tmp, "ref")
-    taller, _, _ = export(part, {**defs, **WEB, key: ref + 10}, tmp, "taller")
+    and seeing which levels moved. fine is the print quality, else the website's coarser one."""
+    quality = {} if fine else WEB
+    mesh, nums, _ = export(part, {**defs, **quality, key: ref}, tmp, "ref")
+    taller, _, _ = export(part, {**defs, **quality, key: ref + 10}, tmp, "taller")
     low, high = mesh.levels(), taller.levels()
     if len(low) != len(high):
         sys.exit("riser_build: %s changes shape with height" % part)
@@ -206,54 +209,133 @@ def stretch_band(tmp, part, defs, key, ref):
     return mesh, nums, low[first - 1], low[first]
 
 
-def stretched(mesh, z1, by):
-    return {(x, y, round(z + by, 3) if z >= z1 - 0.001 else z) for x, y, z in mesh.points(3)}
+def stretched_tris(mesh, z1, by):
+    return [tuple((p[0], p[1], p[2] + by if p[2] >= z1 - 0.001 else p[2]) for p in tri) for tri in mesh.tris]
 
 
-def stretched_volume(mesh, z1, by):
+def volume(tris):
     total = 0.0
-    for tri in mesh.tris:
-        a, b, c = [(p[0], p[1], p[2] + by if p[2] >= z1 - 0.001 else p[2]) for p in tri]
+    for a, b, c in tris:
         total += (a[0] * (b[1] * c[2] - b[2] * c[1]) - a[1] * (b[0] * c[2] - b[2] * c[0])
                   + a[2] * (b[0] * c[1] - b[1] * c[0]))
     return total / 6.0
 
 
+def points_of(tris, places=3):
+    return {(round(p[0], places), round(p[1], places), round(p[2], places)) for t in tris for p in t}
+
+
 def unmatched(points, others, tolerance=0.005):
-    """How many of points have no partner in others within the tolerance."""
+    """Those of points with no partner in others within the tolerance."""
     buckets = {}
     for p in others:
         buckets.setdefault((round(p[0], 1), round(p[1], 1)), []).append(p)
-    count = 0
+    alone = []
     for p in points:
         near = [q for dx in (-0.1, 0, 0.1) for dy in (-0.1, 0, 0.1)
                 for q in buckets.get((round(p[0] + dx, 1), round(p[1] + dy, 1)), [])]
         if not any(all(abs(p[i] - q[i]) <= tolerance for i in range(3)) for q in near):
-            count += 1
-    return count
+            alone.append(p)
+    return alone
 
 
-def check_stretch(tmp, part, defs, key, ref, others):
-    """A part exported at another height must be the reference mesh with its top moved."""
+def distance_to_triangle(p, a, b, c):
+    """From a point to the nearest point of a triangle (Ericson, Real-Time Collision Detection)."""
+    sub = lambda u, v: (u[0] - v[0], u[1] - v[1], u[2] - v[2])
+    dot = lambda u, v: u[0] * v[0] + u[1] * v[1] + u[2] * v[2]
+    along = lambda u, d, t: (u[0] + d[0] * t, u[1] + d[1] * t, u[2] + d[2] * t)
+    ab, ac, ap = sub(b, a), sub(c, a), sub(p, a)
+    d1, d2 = dot(ab, ap), dot(ac, ap)
+    if d1 <= 0 and d2 <= 0:
+        return math.dist(p, a)
+    bp = sub(p, b)
+    d3, d4 = dot(ab, bp), dot(ac, bp)
+    if d3 >= 0 and d4 <= d3:
+        return math.dist(p, b)
+    vc = d1 * d4 - d3 * d2
+    if vc <= 0 and d1 >= 0 and d3 <= 0:
+        return math.dist(p, along(a, ab, d1 / (d1 - d3)))
+    cp = sub(p, c)
+    d5, d6 = dot(ab, cp), dot(ac, cp)
+    if d6 >= 0 and d5 <= d6:
+        return math.dist(p, c)
+    vb = d5 * d2 - d1 * d6
+    if vb <= 0 and d2 >= 0 and d6 <= 0:
+        return math.dist(p, along(a, ac, d2 / (d2 - d6)))
+    va = d3 * d6 - d5 * d4
+    if va <= 0 and d4 - d3 >= 0 and d5 - d6 >= 0:
+        return math.dist(p, along(b, sub(c, b), (d4 - d3) / ((d4 - d3) + (d5 - d6))))
+    total = va + vb + vc
+    if total == 0:
+        return min(math.dist(p, a), math.dist(p, b), math.dist(p, c))
+    return math.dist(p, along(along(a, ab, vb / total), ac, vc / total))
+
+
+def off_surface(points, tris, tolerance=0.005):
+    """Those of points that do not lie on the surface the triangles make."""
+    off = []
+    for p in points:
+        for a, b, c in tris:
+            if any(p[i] < min(a[i], b[i], c[i]) - tolerance or p[i] > max(a[i], b[i], c[i]) + tolerance
+                   for i in range(3)):
+                continue
+            if distance_to_triangle(p, a, b, c) <= tolerance:
+                break
+        else:
+            off.append(p)
+    return off
+
+
+def lowest_height(z0, z1, ref, floor):
+    """The lowest whole height a part's mesh can be squeezed to. Its top comes down by
+    ref - h, and the straight section is all there is to give. Past that, what hangs from
+    the top lands among what stands on the bottom and the mesh passes through itself."""
+    return max(int(floor), math.ceil(ref - (z1 - z0) - 1e-6))
+
+
+def check_stretch(tmp, part, defs, key, ref, others, floor, fine=False):
+    """A part exported at another height must be the reference mesh with its top moved, from
+    the part's lowest height up. Returns the band, that lowest height, the problems and notes."""
     problems = []
     notes = []
-    mesh, _, z0, z1 = stretch_band(tmp, part, defs, key, ref)
-    for height in others:
-        other, _, _ = export(part, {**defs, **WEB, key: height}, tmp, "other")
-        want = stretched(mesh, z1, height - ref)
-        have = other.points(3)
+    quality = {} if fine else WEB
+    which = ", print mesh" if fine else ""
+    mesh, _, z0, z1 = stretch_band(tmp, part, defs, key, ref, fine)
+    lowest = lowest_height(z0, z1, ref, floor)
+    for height in sorted({lowest} | {h for h in others if h > lowest}):
+        other, _, _ = export(part, {**defs, **quality, key: height}, tmp, "other")
+        moved = stretched_tris(mesh, z1, height - ref)
+        want, have = points_of(moved), other.points(3)
         missing = unmatched(want - have, have)
         extra = unmatched(have - want, want)
-        if missing or extra:
-            # Where features tied to the top reach down among those tied to the bottom, the
-            # slabs split differently and the points differ, though the solid is the same.
-            gap = abs(stretched_volume(mesh, z1, height - ref) - other.volume())
-            if gap < 1.0 and mesh.box()[0][:2] == other.box()[0][:2]:
-                notes.append("%s: same solid, levels interleave" % height)
-            else:
-                problems.append("%s at %s: %d points missing, %d extra, volume off by %.1f mm3"
-                                % (part, height, missing, extra, gap))
-    return (z0, z1), problems, notes
+        if not missing and not extra:
+            continue
+        # The exporter sometimes keeps a point in the middle of a flat face at one height and
+        # drops it at another. That is the same surface: a handful of points, each lying on
+        # the other mesh, and the same volume. The volume alone proves nothing, since a mesh
+        # folded through itself has the right volume too.
+        gap = abs(volume(moved) - other.volume())
+        spare = len(missing) + len(extra)
+        if spare <= 20 and gap < 1.0 and not off_surface(missing, other.tris) and not off_surface(extra, moved):
+            notes.append("%s%s: %d spare point%s on a flat face" % (height, which, spare, "" if spare == 1 else "s"))
+        else:
+            problems.append("%s at %s%s: %d points missing, %d extra, volume off by %.1f mm3"
+                            % (part, height, which, len(missing), len(extra), gap))
+    return (z0, z1), lowest, problems, notes
+
+
+def out_of_reach(lowest_of):
+    """A part may start above its kind's lowest height only when another value of the same
+    option reaches down to it. lowest_of: part id -> (lowest, the kind's lowest, when)."""
+    problems = []
+    for ident, (lowest, floor, when) in lowest_of.items():
+        if lowest <= floor:
+            continue
+        others = [low for other, (low, _, w) in lowest_of.items()
+                  if other != ident and w.keys() == when.keys() and w != when]
+        if not when or not others or min(others) > floor:
+            problems.append("%s starts at %d mm and nothing takes its place down to %d mm" % (ident, lowest, floor))
+    return problems
 
 
 def cmd_check(args):
@@ -305,14 +387,28 @@ def cmd_check(args):
                     failed.append("%s needs support: %s" % (ident, bad))
 
         if want("stretch"):
-            print("Straight middle section: other heights against the stretched reference mesh")
+            print("Straight middle section: other heights against the stretched reference mesh,")
+            print("the website's mesh and the print mesh, each from the part's lowest height up")
+            lowest_of = {}
             for group, key, ref, others in [(MODULE_PARTS, "module_h", REF_H, [30, 45, 90, 120, 200]),
                                             (PLATE_PARTS, "plate_h", REF_PLATE_H, [7, 12, 20])]:
-                for ident, part, defs, _, _ in group:
-                    band, problems, notes = check_stretch(tmp, part, defs, key, ref, others)
-                    print("   %-15s straight from %.1f to %.1f  %s" % (
-                        ident, band[0], band[1], "; ".join(problems + notes) or "ok"), flush=True)
+                floor = customizer(key)[1][0]
+                for ident, part, defs, _, when in group:
+                    band, lowest, problems, notes = check_stretch(tmp, part, defs, key, ref, others, floor)
+                    fine_band, fine_lowest, more, fine_notes = check_stretch(
+                        tmp, part, defs, key, ref, others, floor, fine=True)
+                    problems += more
+                    if fine_band != band:
+                        problems.append("%s: the print mesh is straight from %.1f to %.1f" % (ident, *fine_band))
+                    lowest_of[ident] = (max(lowest, fine_lowest), floor, when)
+                    print("   %-15s straight from %.1f to %.1f, from %d mm up  %s" % (
+                        ident, band[0], band[1], lowest_of[ident][0],
+                        "; ".join(problems + notes + fine_notes) or "ok"), flush=True)
                     failed += problems
+            problems = out_of_reach(lowest_of)
+            for line in problems:
+                print("   " + line)
+            failed += problems
     print()
     if failed:
         print("FAILED:")
@@ -466,7 +562,8 @@ def cmd_web(args):
     meshes = target / "meshes"
     if meshes.exists():
         shutil.rmtree(meshes)
-    meshes.mkdir(parents=True)
+    prints = meshes / "print"
+    prints.mkdir(parents=True)
     h_default, (h_min, _, h_max) = customizer("module_h")
     p_default, (p_min, _, p_max) = customizer("plate_h")
     front_default, fronts = customizer("drawer_front")
@@ -477,8 +574,15 @@ def cmd_web(args):
                 ("module", MODULE_PARTS, "module_h", REF_H, HEIGHTS, 1.0),
                 ("plate", PLATE_PARTS, "plate_h", REF_PLATE_H, PLATE_HEIGHTS, 0.45)]:
             for ident, part, defs, slot, when in group:
+                # Two meshes of each part: a light one to draw, and the one to print from,
+                # which is the same export as the files in stl/. One stretch rule serves both.
+                fine, _, f0, f1 = stretch_band(tmp, part, defs, key, ref, fine=True)
+                shutil.copy(Path(tmp) / "ref.stl", prints / (ident + ".stl"))
                 mesh, nums, z0, z1 = stretch_band(tmp, part, defs, key, ref)
                 shutil.copy(Path(tmp) / "ref.stl", meshes / (ident + ".stl"))
+                if (f0, f1) != (z0, z1):
+                    sys.exit("riser_build: %s is straight from %.1f to %.1f at print quality, but from %.1f to %.1f"
+                             " on the website's mesh" % (ident, f0, f1, z0, z1))
                 lo, hi = mesh.box()
                 motion = None
                 if part == "drawer":
@@ -490,27 +594,28 @@ def cmd_web(args):
                               "deg": -side * tidy(nums["wedge_swing"])}
                 parts.append({
                     "id": ident, "kind": kind, "slot": slot, "when": when,
+                    "h_min": lowest_height(z0, z1, ref, h_min if kind == "module" else p_min),
                     "mesh": "meshes/%s.stl" % ident,
+                    "mesh_print": "meshes/print/%s.stl" % ident,
                     "stretch": [{"z0": z0, "z1": z1, "share": 1}],
                     "motion": motion,
                     "bed": [int(hi[0] - lo[0]) + 1, int(hi[1] - lo[1]) + 1],
                     "est": estimate(tmp, ident, part, defs, key, heights, fill),
                 })
-                print("%-15s %7d triangles %6.0f kB  straight %.1f..%.1f  %s" % (
-                    ident, len(mesh.tris), mesh.size / 1024, z0, z1, parts[-1]["est"]["source"]))
+                print("%-15s %6.0f kB to draw, %6.0f kB to print  straight %.1f..%.1f  from %d mm  %s" % (
+                    ident, mesh.size / 1024, fine.size / 1024, z0, z1, parts[-1]["h_min"], parts[-1]["est"]["source"]))
         for name in ("dell_black", "dell_plate"):
             export(name, WEB, meshes, name)
         nums = openscad(Path(tmp) / "nums.stl", {"part": "dell_black"})
-    # The model and the slicer's numbers both: new estimates are a new revision too
-    digest = hashlib.sha256(SCAD.read_bytes() + (SLICED.read_bytes() if SLICED.exists() else b"")).hexdigest()[:8]
     bundle = {
         "bundle": 1,
         "profile": "dell-u3421we",
-        "revision": "%s.%s" % (datetime.date.today().isoformat(), digest),
+        "revision": "",
         "density_ref": PLA,
         "kinds": {
             "module": {
-                "h": {"min": tidy(h_min), "max": tidy(h_max), "step": 5, "default": tidy(h_default), "ref": REF_H},
+                # Any whole millimetre: a height is the reference mesh with its top moved
+                "h": {"min": tidy(h_min), "max": tidy(h_max), "step": 1, "default": tidy(h_default), "ref": REF_H},
                 "options": {
                     "front": {"values": fronts, "default": front_default},
                     "wedge_l": {"values": wedges, "default": wedge_default},
@@ -529,9 +634,18 @@ def cmd_web(args):
         "ghost": {"black": "meshes/dell_black.stl", "plate": "meshes/dell_plate.stl",
                   "note": "the monitor's base, with Z = 0 on the pocket floor of the top item"},
     }
+    # The revision covers everything the site receives, the fields and every mesh: whatever
+    # changes there, the model, the slicer's numbers or this script, is a new revision.
+    seen = hashlib.sha256(json.dumps(bundle, sort_keys=True).encode("utf-8"))
+    files = sorted(meshes.rglob("*.stl"))
+    for path in files:
+        seen.update(path.relative_to(target).as_posix().encode("utf-8") + path.read_bytes())
+    bundle["revision"] = "%s.%s" % (datetime.date.today().isoformat(), seen.hexdigest()[:8])
     (target / "bundle.json").write_text(json.dumps(bundle, indent=1) + "\n", encoding="utf-8")
-    total = sum(f.stat().st_size for f in meshes.iterdir())
-    print("Wrote web/bundle.json, revision %s, meshes %.1f MB" % (bundle["revision"], total / 1e6))
+    light = sum(f.stat().st_size for f in files if f.parent == meshes)
+    total = sum(f.stat().st_size for f in files)
+    print("Wrote web/bundle.json, revision %s, meshes %.1f MB to draw and %.1f MB to print" % (
+        bundle["revision"], light / 1e6, (total - light) / 1e6))
 
 
 # --------------------------------------------------------------- pictures
